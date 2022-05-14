@@ -1,0 +1,123 @@
+{% extends "admin_base.j2" %}
+{% block title %}
+	Registration
+{% endblock %}
+
+
+{% block external_child_css %}
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/multistepform.css') }}" />
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/email.css') }}" />
+{% endblock %}
+
+{% block external_js %}
+	<script src="{{ url_for('static',filename='js/multistepform.js') }}" ></script>
+	<script src="{{ url_for('static',filename='js/update_application.js') }}" ></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+{% block page %}
+	
+
+<div class="toast fade align-items-center text-white border-0" style="position: absolute; top: 3.8rem; right: 01.5rem; z-index: 1111;" role="toast" data-bs-autohide="true"  id="toastMessage">
+  <div class="d-flex">
+    <div class="toast-body" id="toastBody" >
+      If you are seeing this then, you shouldn't be here :)
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div> 	
+<div class="form-container">
+		
+		<!-- MultiStep Form -->
+<div class="container-fluid">
+    <div class="row justify-content-center mt-0">
+        <div class="col-11 col-sm-9 col-md-7 col-lg-6 text-center p-0 mt-3 mb-2">
+            <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                <h2><strong>Update Application Details</strong></h2>
+                <div class="row">
+                    <div class="col-md-12 mx-0">
+                        <form id="msform">
+                            <!-- progressbar -->
+                            <ul id="progressbar">
+                                <li class="active" id="applicationName"><strong>Select Application</strong></li>
+                                <li id="updateDetails"><strong>Update Details</strong></li>
+                            </ul>
+                            <!-- fieldsets -->
+                            <fieldset>
+                                <div class="form-card">
+                                    <label for="appName"><h5 class="lead">Application Name</h3></label>
+								    <input type="text" class="form-control" id="appName" aria-describedby="appName" placeholder="Enter Application Name" required>
+								    <small id="appName" class="form-text text-muted">(Name of the application to update the details)</small></br></br>
+                                </div>
+                                <input type="button" id="appNameBtn" name="next" class="next action-button" value="Next Step"/>
+                            </fieldset>
+                            <fieldset>
+                                <div class="form-card">
+                                    <label for="appName"><h5 class="lead">Application Description</h3></label>
+			    <textarea class="form-control" id="shortDescription" aria-describedby="appName" placeholder="Enter Short Description" required></textarea>
+			    <small id="appName" class="form-text text-muted">(Short description of the application)</small></br></br>
+				
+				<label class="form-label" for="emailAddress"><h5 class="lead">Email Address</h3></label>
+		      
+				<article class="contactForm">
+					<div class="formContainer">
+					  
+					   <div id="contact-us" class="form">
+					
+					      <div id="contactForm">
+					         
+					         <input value="" placeholder="id@domain.com" type="text" class="form-control" id="email">
+					      </div>
+					      <p id="emailJson"></p>
+					      <p data-error="email" class="errors"></p>
+					       <div id="emailAddress">
+					         <ul>
+					         </ul>
+					      </div>
+					   </div>
+					    <div class="heading ">
+					  
+					      <p>Hit <kbd>Enter</kbd> or type <kbd>,</kbd> or hit <kbd>space</kbd> after you enter an email</p>
+					   </div>
+					</div>
+					
+				</article>
+				
+				 <small id="appName" class="form-text text-muted">(Recipient email IDs for resume codes)</small>
+                                </div>
+                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+			    				<button type="button" id="submitForm" class="action-button">Submit</button>
+                            </fieldset>
+                          
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+	
+		<form id="	">
+			  <div class="form-group">
+			    
+			   
+		        <div class="invalid-feedback" data-sb-feedback="emailAddress:required">Email Address is required.</div>
+		        <div class="invalid-feedback" data-sb-feedback="emailAddress:email">Email Address Email is not valid.</div>
+						
+				<!--
+				<div class="multiple-val-input">
+				    <ul>
+				        <input type="text">
+				        <span class="input_hidden"></span>
+				    </ul>
+				</div>
+				-->
+				
+			   </br></br>
+			  </div>
+		
+		</form>
+	</div>
+<script src="{{ url_for('static',filename='js/email.js') }}" ></script>
+{% endblock %}
+

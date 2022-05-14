@@ -1,0 +1,98 @@
+{#
+	Copyright (C) 2022 Frostyaxe. All rights reserved.
+	You don't have permission to update this file without the author's approval.
+	Author: Abhishek Prajapati (prajapatiabhishek1996@gmail.com)
+#}
+	
+
+
+
+{% extends "base.j2" %}
+{% block title %}
+	Admin Home
+{% endblock %}
+
+
+{% block external_css %}
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/sidebar.css') }}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	{% block external_child_css %}
+	{% endblock %}
+{% endblock %}
+
+{% block external_js %}
+	{% block external_child_js %}
+	
+	{% endblock %}
+{% endblock %}
+
+
+{% block content %}
+	<!--Main Navigation-->
+<header>
+  <!-- Sidebar -->
+  <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-light">
+    <div class="position-sticky">
+    
+	    <div class="d-grid gap-2 col-6 mx-auto mt-5">
+		    <form action="/admin/logout" method="GET">
+		       <input type="submit" class="btn btn-secondary ms-1 mt-2 btn-block" value="logout"></input>
+		    </form>
+	    </div>
+	    
+	    <h3 class="lead mt-5 mx-3">Application</h3>
+	    <div class="list-group list-group-flush mx-3 mt-2">
+      
+	        <a href="/application/registration" class="list-group-item list-group-item-action py-2 ripple">
+	        	<span>Register Application</span>
+	        </a>
+	
+	        <a href="/application/unregistration" class="list-group-item list-group-item-action py-2 ripple">
+	        	<span>Unregister Application</span>
+	        </a>
+	        
+	        <a href="/admin/applicationUpdate" class="list-group-item list-group-item-action py-2 ripple">
+	        	<span>Update Application</span>
+	        </a>
+
+     	 </div>
+      
+         <h3 class="lead mt-3 mx-3">Admin</h3>
+      
+      	 <div class="list-group list-group-flush mx-3 mt-2">
+
+	        <a href="/admin/passwordChange" class="list-group-item list-group-item-action py-2 ripple">
+	        	<span>Update Admin Password</span>
+	        </a>
+	
+      </div>
+  </nav>
+  <!-- Sidebar -->
+
+</header>
+<!--Main Navigation-->
+
+<!--Main layout-->
+<main style="margin-top: 58px">
+  <div class="container pt-4">
+  </div>
+</main>
+<!--Main layout-->
+{% if request.path == "/admin/home"  %}
+<i class="lead display-6">Register Application</i><br><br>
+&emsp; Registration of the newly onboarded application. It will authorize the given application name to be used for the production deployments.
+<div class="mt-4"></div>
+<i class="lead display-6">Unregister Application</i><br><br>
+&emsp; Unregister the application and make it unauthorized for the further production deployments.
+<div class="mt-4"></div>
+<i class="lead display-6">Update Application</i><br><br>
+&emsp; Update the application details like application description and notification email Ids. <mark> You cannot update the application name.</mark>
+<div class="mt-4"></div>
+<i class="lead display-6">Update Admin Password</i><br><br>
+&emsp; Allows you to update the existing admin password.
+{% endif %}
+{% block page %}
+
+{% endblock %}
+
+{% endblock %}

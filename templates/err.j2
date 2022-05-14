@@ -1,0 +1,21 @@
+{% extends "base.j2" %}
+{% block title %}
+	{{ status_code }}
+{% endblock %}
+
+
+{% block external_css %}
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/err.css') }}" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+
+{% block content %}
+	<div class="error-container">
+		<div class="display-1"><i class="fa fa-rocket"></i>{{ status_code }}: {{ error_title }}!</div></br>
+		<div class="alert alert-dark display-6" role="alert">{{ error_description }}</div>
+		<form action="/">
+			<button type="submit" class="btn btn-outline-dark btn-lg"><i class="fa fa-home"></i> Back To Home</button>
+		</form>
+	</div>
+{% endblock %}

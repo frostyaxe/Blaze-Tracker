@@ -1,0 +1,86 @@
+  <div class="row">
+	    	
+	    	{% if task_details|length == 0 %}
+	    			
+	    			<div class="display-1"><i class="fa fa-quote-left"></i> Uh-Oh, Execution has not been started yet!</div>
+	    			
+	    	{% endif %}
+	    
+	    	{% for job_details in task_details %}
+	    	
+	    	{% if job_details["STATUS"]|upper == "FAILURE" %}
+	    		{% set badge_color = 'bg-danger' %}
+	    		{% set status_animate = 'fa-stop-circle-o' %}
+	    	{% elif job_details["STATUS"]|upper == "SUCCESS" %}	
+	    		{% set badge_color = 'bg-success' %}
+	    		{% set status_animate = 'fa-check' %}
+	    	{% elif job_details["STATUS"]|upper == "RUNNING" %}	
+	    		{% set badge_color = 'bg-info' %}
+	    		{% set status_animate = 'fa-circle-o-notch fa-spin' %}
+	    	{% elif job_details["STATUS"]|upper == "PAUSED" %}	
+	    		{% set badge_color = 'bg-dark' %}
+	    		{% set status_animate = 'fa-pause-circle' %}
+	    	{% elif job_details["STATUS"]|upper == "RESUMED" %}	
+	    		{% set badge_color = 'bg-success' %}
+	    		{% set status_animate = 'fa-play-circle' %}
+	    	{% endif %}
+	    	
+	        <div class="col-md-4 mb-4">
+	            <div class="card mb-4 h-100" style="min-width: 18rem;">
+	            	<div class="card-header">
+	            		<div class="row">
+	            			<div class="col-xs-12 col-sm-6 col-md-8"></div>
+	            			<div class="col-xs-6 col-md-4">
+		                    	<span class="badge rounded-pill bg-dark">Version: {{ job_details["JOB_ID"] }}</span>
+		                    </div>
+	            		</div>
+	            	</div>
+	                <div class="card-body h-100">
+	                    <h5 class="card-title">{{ job_details["TASK_NAME"] }}</h5>
+	                    
+	                   	
+	                    <div class="mt-5">
+	                    	{% if job_details["STATUS"]|upper != "PAUSED" and job_details["STATUS"]|upper != "RESUMED"  %}
+	                    	
+	                        <div class="progress">
+	                        
+	                        {% if  job_details["PROGRESS"]  == '100' %}
+	                        	{% set progress_animation = '' %} 
+	                        {% else %}
+	                        	{% set progress_animation = 'progress-bar-striped progress-bar-animated' %}
+	                        {% endif %}
+	                        
+	                            <div class="progress-bar  {{progress_animation}}"  role="progressbar" style="width: {{ job_details["PROGRESS"] }}%" aria-valuenow="{{ job_details["JOB_ID"] }}" aria-valuemin="0" aria-valuemax="100"></div>
+	                        </div>
+	                        
+	                        </br>
+	                     	<div>
+								<a href="{{job_details['JOB_URL']}}/consoleText" class="btn btn-outline-dark" role="button" target="_blank" title="Build Log" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="Click to access build log!"><i class="fa fa-file-text-o"></i></a>
+								<a href="{{job_details['JOB_URL']}}" class="btn btn-outline-dark" role="button" target="_blank" title="Build Details" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="Click to access build details!"><i class="fa fa-link"></i></a>
+	                        </div>
+	                        {% elif job_details["STATUS"]|upper == "RESUMED" %}
+	                        <div class="alert alert-info">Task has been completed successfully.</div>
+	                        {% else %}
+	                    		<div class="row g-3 align-items-center">
+								  <div class="col-auto">
+								    <label for="inputSecretCode" class="col-form-label lead">Code:</label>
+								  </div>
+								  <div class="col-auto">
+								    <input type="text" id="inputSecretCode{{loop.index}}" class="form-control form-control-sm" aria-describedby="inputSecretCode" placeholder="------" />
+								  </div>
+								   <div class="col-auto">
+								    <button type="button"  id="codeSubmit{{loop.index}}" class="btn btn-outline-dark btn-sm" onclick='resumePipeline("{{loop.index}}","{{job_details["TASK_NAME"]}}")'>Submit</button>
+								  </div>
+								</div>
+						   {% endif %}
+	                    	
+	                    </div>
+	                </div>
+	                 <div class="card-footer text-center" style="background-color:white"> 
+	                 	<span class="text1 float-start">Status: <span class="badge {{ badge_color }}"><i class="fa {{ status_animate }}" style="font-size:12px"></i>&nbsp;{{ job_details["STATUS"] }}</span></span> 
+	                 	<small class="float-end">{{ job_details["TIMESTAMP"] }} (utc)</small>
+	                 </div>
+	            </div>
+	        </div>
+	        {% endfor %}
+        </div>

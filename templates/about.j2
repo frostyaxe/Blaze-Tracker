@@ -1,0 +1,110 @@
+{% extends "base.j2" %}
+{% block title %}
+	About
+{% endblock %}
+
+{% block external_css %}
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/about.css') }}" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/ >
+{% endblock %}
+
+{% block external_js %}
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-5">
+	<div class="row">
+	    <div class="col-lg-4">
+	        <div class="card card-margin">
+	            <div class="card-header no-border">
+	                <h5 class="card-title">GitHub</h5>
+	            </div>
+	            <div class="card-body pt-0">
+	                <div class="social">
+	                    <div class="title-wrapper">
+	                        <div class="icon-container">
+	                            <span class="social-icon"><i class="fa fa-github"></i></span>
+	                        </div>
+	                        
+	                        <div class="info">
+	                            <span class="title">Frostyaxe</span>
+	                            <a class="btn btn-outline-secondary btn-sm" href="https://github.com/frostyaxe" target="_blank">View Profile</a>
+	                        </div>
+	                    </div>
+		                 <div class="action">
+	                        <a class="btn btn-sm btn-flash-border-success" data-bs-toggle="collapse" href="#gitOptionTable"  aria-expanded="false" aria-controls="gitOptionTable">View All</a>
+	                    </div>
+	                    </br>
+	                     <div class="collapse" id="gitOptionTable">
+		                    <table class="table table-striped table-hover">
+		                    <tr>
+		                        <td><span class="lead" style="font-size: 1.15rem">Tracker Repository</span></td><td><a class="btn btn-sm btn-outline-dark" href="https://github.com/frostyaxe/Blaze-Tracker" style="width:100%" target="_blank">Blaze Tracker</a></td>
+		                    </tr>
+		                    <tr>
+		                        <td><span class="lead" style="font-size: 1.15rem">Client Repository</span></td><td><a class="btn btn-sm btn-outline-dark" href="https://github.com/frostyaxe/Blaze-Client" style="width:100%" target="_blank">Blaze Client</a></td>
+		                     </tr>
+		                   </table>
+		                </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="col-lg-4">
+	        <div class="card card-margin">
+	            <div class="card-header no-border">
+	                <h5 class="card-title">Facebook</h5>
+	            </div>
+	            <div class="card-body pt-0">
+	                <div class="social">
+	                    <div class="title-wrapper">
+	                        <div class="icon-container">
+	                            <span class="social-icon"><i class="fa fa-facebook"></i></span>
+	                        </div>
+	                        
+	                        <div class="info">
+	                            <span class="title">Abhishek Prajapati</span>
+	                            <a class="btn btn-outline-secondary btn-sm" href="https://www.facebook.com/ABStarMusic/" target="_blank">View Profile</a>
+	                        </div>
+	                    </div>
+	                     <div class="action">
+	                        <a class="btn btn-sm btn-flash-border-success text-muted" href="#">View All</a>
+	                   	 </div></br>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	      <div class="col-lg-4">
+	        <div class="card card-margin">
+	            <div class="card-header no-border">
+	                <h5 class="card-title">Gmail</h5>
+	            </div>
+	            <div class="card-body pt-0">
+	                <div class="social">
+	                    <div class="title-wrapper">
+	                        <div class="icon-container">
+	                            <span class="social-icon"><i class="fa fa-google"></i></span>
+	                        </div>
+	                        
+	                        <div class="info">
+	                            <span class="title">Abhishek Prajapati</span>
+	                        </div>
+	                    </div>
+	                    <div class="action">
+	                        <a class="btn btn-sm btn-flash-border-success" data-bs-toggle="collapse" href="#gmailOptionTable"  aria-expanded="false" aria-controls="gmailOptionTable">View All</a>
+	                    </div>
+	                    </br>
+	                    <div class="collapse" id="gmailOptionTable">
+		                    <table class="table table-striped table-hover">
+		                    <tr>
+		                        <td><span class="lead" style="font-size: 1.15rem">Support</span></td><td><a class="btn btn-sm btn-outline-dark" href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=prajapatiabhishek1996@gmail.com" style="width:100%" target="_blank">Email</a></td>
+		                    </tr>
+		                   </table>
+		               </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+  </div>
+{% endblock %}

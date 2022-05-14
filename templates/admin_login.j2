@@ -1,0 +1,111 @@
+{#
+	Copyright (C) 2022 Frostyaxe. All rights reserved.
+	You don't have permission to update this file without the author's approval.
+	Author: Abhishek Prajapati (prajapatiabhishek1996@gmail.com)
+#}	
+	
+
+
+
+{% extends "base.j2" %}
+{% block title %}
+	Admin Login
+{% endblock %}
+
+{% block content %}
+<section class="background-radial-gradient overflow-hidden" style="top: 50%;right: 0;">
+  <style>
+    .background-radial-gradient {
+      background-color: hsl(218, 41%, 15%);
+      background-image: radial-gradient(250px circle at 0% 0%,
+          hsl(218, 41%, 35%) 15%,
+          hsl(218, 41%, 30%) 35%,
+          hsl(218, 41%, 20%) 75%,
+          hsl(218, 41%, 19%) 80%,
+          transparent 100%),
+        radial-gradient(1250px circle at 100% 100%,
+          hsl(218, 41%, 45%) 15%,
+          hsl(218, 41%, 30%) 35%,
+          hsl(218, 41%, 20%) 75%,
+          hsl(218, 41%, 19%) 80%,
+          transparent 100%);
+    }
+
+    #radius-shape-1 {
+      height: 220px;
+      width: 220px;
+      top: -60px;
+      left: -130px;
+      background: radial-gradient(#456789b, #ad1fff);
+      overflow: hidden;
+    }
+    
+    .center-div {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+section {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .bg-glass {
+      background-color: hsla(0, 0%, 100%, 0.9) !important;
+      backdrop-filter: saturate(200%) blur(25px);
+    }
+  </style>
+
+  <div class="container  px-4 py-5 px-md-5 text-center text-lg-start my-5 " >
+    <div class="row gx-lg-5 align-items-center mb-5">
+      <div class="col-lg-6 mb-5 mb-lg-0" style="z-index: 10">
+        <h1 class="my-5 display-5 fw-bold ls-tight" style="color: hsl(218, 81%, 95%)">
+          Blaze <br />
+          <span style="color: hsl(218, 81%, 75%)">Admin</span>
+        </h1>
+      </div>
+
+      <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+        <div id="radius-shape-1" class="position-absolute rounded-circle shadow-5-strong"></div>
+        <div id="radius-shape-2" class="position-absolute shadow-5-strong"></div>
+
+        <div class="card bg-glass">
+          <div class="card-body px-4 py-5 px-md-5">
+            <form method="POST" action="/admin/login">
+       
+              <!-- Email input -->
+              <div class="form-outline mb-4">
+                <input type="text" id="userId" name="userId" class="form-control" />
+                <label class="form-label" for="form3Example3">User ID</label>
+              </div>
+
+              <!-- Password input -->
+              <div class="form-outline mb-4">
+                <input type="password" id="password" name="password" class="form-control" />
+                <label class="form-label" for="form3Example4">Password</label>
+              </div>
+
+            
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-primary btn-block mb-4">
+                Login
+              </button>
+		
+			
+			{% if alert_message %}
+				<div class="alert alert-{{ alert_type }} align-items-center" role="alert" id="alertContainer" >
+					    {{ alert_message }}
+				</div>	
+           	{% endif %}
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

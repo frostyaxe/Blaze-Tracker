@@ -1,0 +1,38 @@
+.nav-bar {
+  /* fallback for old browsers */
+  background: #a1c4fd;
+
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: -webkit-linear-gradient(to right, rgba(161, 196, 253, 0.5), rgba(194, 233, 251, 0.5));
+
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: linear-gradient(to right, rgba(161, 196, 253, 0.5), rgba(194, 233, 251, 0.5));
+
+
+
+
+}
+
+#page-content {
+  flex: 1 0 auto;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+.form-group {
+    margin-bottom: 2rem;
+}
+
+label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.navbar-nav.navbar-center {
+    position: absolute;
+    left: 50%;
+    transform: translatex(-50%);
+}

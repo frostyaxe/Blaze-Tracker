@@ -1,0 +1,11 @@
+.error-container {
+	
+  position: absolute;
+  width: auto;
+  height: auto;
+  z-index: 15;
+  top: 50%;
+  left: 36%;
+  margin: -100px 0 0 -150px;
+
+}
