@@ -13,4 +13,4 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
 
 # Preview (Dashboard Page - Execution progress & Paused Pipeline)
 
-![Alt Text](https://github.com/frostyaxe/Blaze-Tracker/blob/master/static/img/blaze.gif)
+![Alt Text](https://github.com/frostyaxe/Blaze-Tracker/blob/master/static/img/blaze-preview.gif)
