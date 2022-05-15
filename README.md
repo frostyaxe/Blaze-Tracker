@@ -11,3 +11,6 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
 - Download blaze client: https://github.com/frostyaxe/Blaze-Client/releases/tag/v1.0-beta.1</br>
   (Use blaze-client for linux platform and blaze-client.exe for windows platform)
 
+# Preview (Dashboard Page - Execution progress & Paused Pipeline)
+
+![Alt Text](https://github.com/frostyaxe/Blaze-Tracker/blob/master/static/img/blaze.gif)
