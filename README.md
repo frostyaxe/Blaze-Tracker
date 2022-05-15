@@ -8,4 +8,6 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
 - **Python 3.10** must be installed in the system
 - Installation of **required python modules** must be done using requirements.txt file present in the current repository.
 - Latest version of **Jenkins** installed in the system for the creation of master and worker job configuration (we will discuss about this in detail later on)
+- Download blaze client: https://github.com/frostyaxe/Blaze-Client/releases/tag/v1.0-beta.1</br>
+  (Use blaze-client for linux platform and blaze-client.exe for windows platform)
 
