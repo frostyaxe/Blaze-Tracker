@@ -70,6 +70,14 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
       Gmail SMTP server address: <i><u>smtp.gmail.com</u></i>                    </br>
       Gmail SMTP port (TLS): <i><u>587</u></i>                                     </br>
       Gmail SMTP port (SSL): <i><u>465</u></i>                     
-      </td>    
+      </td> 
+    </tr>
+    <tr>
+      <td>USERNAME</td>
+      <td>Email ID of the User</td>
+    </tr>
+    <tr>
+      <td>PASSWORD</td>
+      <td>Password/Authentication token of the user. For gmail, Please generate the app password and use it instead of actual login password: https://myaccount.google.com/apppasswords</td>
     </tr>
   </table>
