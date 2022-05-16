@@ -14,3 +14,23 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
 # Preview (Dashboard Page - Execution progress & Paused Pipeline)
 
 ![Alt Text](https://github.com/frostyaxe/Blaze-Tracker/blob/master/static/img/blaze-preview.gif)
+
+# Setup Instructions
+
+### Step 1: Blaze Configuration Update
+- Open the config file present in this repository
+- Update the Jenkins configuration
+  <table>
+    <tr>
+      <th>Option</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>SERVER_URL</td>
+      <td>Jenkins server base url. For example: http://localhost:8000</td>
+    </tr>
+    <tr>
+      <td>USERNAME</td>
+      <td>Jenkins User ID. <strong>Note: Framework does not support anonymous access.</strong></td>
+    </tr>
+  <table>
