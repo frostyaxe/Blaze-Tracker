@@ -49,3 +49,27 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
       <td>Random Secret Key String. <strong>Tip: Use MD5 string of any text that will be easy to remember. Please check the following link: <a href="https://www.md5hashgenerator.com"> Text to MD5 string</a></strong></td>    
     </tr>
   </table>
+    
+- Update Email Configuration Details
+  <table>
+    <tr>
+      <th>Option</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>SENDER</td>
+      <td>EMAIL ID of the sender.</td>
+    </tr>
+    <tr>
+      <td>PROTOCOL</td>
+      <td>Supports TLS & SSL</td>
+    </tr>
+    <tr>
+      <td>SMTP</td>
+      <td>Host & Port details. </br><strong>For Example ( GMAIL Details ):</strong></br>
+      Gmail SMTP server address: <i><u>smtp.gmail.com</u></i>                    </br>
+      Gmail SMTP port (TLS): <i><u>587</u></i>                                     </br>
+      Gmail SMTP port (SSL): <i><u>465</u></i>                     
+      </td>    
+    </tr>
+  </table>
