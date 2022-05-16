@@ -38,3 +38,14 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
       <td>Jenkins Authentication Token. Set the environment variable in the system named as "JENKINS_TOKEN" and keep the authentication there. <b>Do not hardcode authentication token in the file</b></td>
     </tr>
   <table>
+- Update the blaze authentication details
+  <table>
+    <tr>
+      <th>Option</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td>SECRET_KEY</td>
+      <td>Random Secret Key String. <strong>Tip: Use MD5 string of any text that will be easy to remember. Please check the following link: <a href="https://www.md5hashgenerator.com"> Text to MD5 string</a></strong></td>    
+    </tr>
+  </table>
