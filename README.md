@@ -81,3 +81,8 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
       <td>Password/Authentication token of the user. For gmail, Please generate the app password and use it instead of actual login password: https://myaccount.google.com/apppasswords.  Store it in the environment variable named as "EMAIL_SECRET".</td>
     </tr>
   </table>
+
+### Step 2: Run the application on development server for POC. If you want to use any production webserver then use gunicorn.
+
+To run it on development server, execute the below command in the root folder of this repository.</br>
+`python blaze.py`
