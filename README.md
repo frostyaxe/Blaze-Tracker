@@ -18,7 +18,7 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
 # Setup Instructions
 
 ### Step 1: Blaze Configuration Update
-- Open the config file present in this repository
+- Open the config.py file present in this repository
 - Update the Jenkins configuration
   <table>
     <tr>
@@ -32,5 +32,9 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
     <tr>
       <td>USERNAME</td>
       <td>Jenkins User ID. <strong>Note: Framework does not support anonymous access.</strong></td>
+    </tr>
+    <tr>
+      <td>TOKEN</td>
+      <td>Jenkins Authentication Token. Set the environment variable in the system named as "JENKINS_TOKEN" and keep the authentication there. <b>Do not hardcode authentication token in the file</b></td>
     </tr>
   <table>
