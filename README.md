@@ -46,7 +46,7 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
     </tr>
     <tr>
       <td>SECRET_KEY</td>
-      <td>Random Secret Key String. <strong>Tip: Use MD5 string of any text that will be easy to remember. Please check the following link: <a href="https://www.md5hashgenerator.com"> Text to MD5 string</a></strong></td>    
+      <td>Random Secret Key String. <strong>Tip: Use MD5 string of any text that will be easy to remember. Please check the following link: <a href="https://www.md5hashgenerator.com"> Text to MD5 string</a></strong>. Store it in the environment variable named as "BLAZE_SECRET".</td>    
     </tr>
   </table>
     
@@ -78,6 +78,6 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
     </tr>
     <tr>
       <td>PASSWORD</td>
-      <td>Password/Authentication token of the user. For gmail, Please generate the app password and use it instead of actual login password: https://myaccount.google.com/apppasswords</td>
+      <td>Password/Authentication token of the user. For gmail, Please generate the app password and use it instead of actual login password: https://myaccount.google.com/apppasswords.  Store it in the environment variable named as "EMAIL_SECRET".</td>
     </tr>
   </table>
