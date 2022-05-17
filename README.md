@@ -108,7 +108,7 @@ Worker job can be any Jenkins configuration that could perform the actual task b
 ### What is the role of master jobs?
 Reads the details from the instruction YAML file (That will be talking about in detail further) and initiates the execution based on the details provided by the user. It reads the worker job configuration name and custom parameters provided by the user from the instruction file and triggers the build in the worker job with those custom parameters.
 
-Note: Here you can reuse the same worker configuration for trigger the build with different custom parameters. 
+Note: Here you can reuse the same worker configuration for triggering the build with different custom parameters. 
 
 ### What is the role of instruction file?
 Instruction file which is also known as "taskbook" will be having the details related to the worker job configuration name and required the custom parameters for the build. Taskbook consists of multiple tasks and each task might have the same or different configuration name and custom parameters. It handles the entire execution flow such as sequence of the tasks execution, pausing the pipeline after the desired task execution, skipping the task, rerunning the previous task and many more.
