@@ -141,5 +141,7 @@ tasks:
 
 ```
 
+**Note:** As you can see in the above example, we have used "blazeconfig_db" configuration twice for the deployments of two different versions.
+
 ## Step 4: Configuration of Jenkins Worker Job
 
