@@ -111,6 +111,35 @@ Reads the details from the instruction YAML file (That will be talking about in 
 Note: Here you can reuse the same worker configuration for trigger the build with different custom parameters. 
 
 ### What is the role of instruction file?
+Instruction file which is also known as "taskbook" will be having the details related to the worker job configuration name and required the custom parameters for the build. Taskbook consists of multiple tasks and each task might have the same or different configuration name and custom parameters. It handles the entire execution flow such as sequence of the tasks execution, pausing the pipeline after the desired task execution, skipping the task, rerunning the previous task and many more.
+
+Simple taskbook file:
+```
+tasks:
+
+    - name: "Deployment of Application Package"
+      config: blazeconfig_app
+      category: "predeploy"
+      parameters:
+          "version": "blaze_app-1.0.123"
+    
+    - name: "Pause Task"
+      config: pause
+      category: "predeploy"
+      
+    - name: "Deployment of DB Packages 122"
+      config: blazeconfig_db
+      category: "predeploy"
+      parameters: 
+          "version": "blaze_db-1.0.122"
+          
+    - name: "Deployment of DB Packages 123"
+      config: blazeconfig_db
+      category: "predeploy"
+      parameters: 
+          "version": "blaze_db-1.0.123"
+
+```
 
 ## Step 4: Configuration of Jenkins Worker Job
 
