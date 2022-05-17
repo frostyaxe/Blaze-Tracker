@@ -89,4 +89,13 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
 
 - If you want to run the application on any webserver then I suggest use **Gunicorn**.
 
+## Step 3: Prepare the Master & Worker Jobs in Jenkins
 
+### What is master & worker configurations?
+A master job in the jenkins reads the instruction from the instruction file(YAML) and based on the worker configuration name provided by the user, it initiates the execution of the Jenkins worker job with the custom parameters.
+
+```mermaid
+sequenceDiagram
+Instruction YAML File ->> Jenkins Master Job: Worker configuration name & custom parameters (version & other user-defined parameter
+Jenkins Master Job -->> Jenkins Worker Job: Build the worker job with custom parameters
+```
