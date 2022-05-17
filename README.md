@@ -89,7 +89,7 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
 
 - If you want to run the application on any webserver then I suggest use **Gunicorn**.
 
-## Step 3: Prepare the Master & Worker Jobs in Jenkins
+## Step 3: Understand the Master & Worker Jobs in Jenkins
 
 ### What is master & worker configurations?
 A master job in the jenkins reads the instruction from the instruction file(YAML) and based on the worker configuration name provided by the user, it initiates the execution of the Jenkins worker job with the custom parameters.
@@ -97,5 +97,20 @@ A master job in the jenkins reads the instruction from the instruction file(YAML
 ```mermaid
 sequenceDiagram
 Instruction YAML File ->> Jenkins Master Job: Worker configuration name & custom parameters (version & other user-defined parameter
-Jenkins Master Job -->> Jenkins Worker Job: Build the worker job with custom parameters
+Jenkins Master Job -->> Jenkins Worker Job 1: Build the worker job with custom parameters
+Jenkins Master Job -->> Jenkins Worker Job 2: Build the worker job with custom parameters
+Jenkins Master Job -->> Jenkins Worker Job 3: Build the worker job with custom parameters
 ```
+
+### What is the role of worker jobs?
+Worker job can be any Jenkins configuration that could perform the actual task based on the inputs provided by user (if required). For example, You might have another tool for the continuous deployment and you have written a shell or python script to initiate the deployment from the Jenkins. Most of the deployments required version number. Hence you can parameterize this and let the master job handle the initiation of the execution with custom details.
+
+### What is the role of master jobs?
+Reads the details from the instruction YAML file (That will be talking about in detail further) and initiates the execution based on the details provided by the user. It reads the worker job configuration name and custom parameters provided by the user from the instruction file and triggers the build in the worker job with those custom parameters.
+
+Note: Here you can reuse the same worker configuration for trigger the build with different custom parameters. 
+
+### What is the role of instruction file?
+
+## Step 4: Configuration of Jenkins Worker Job
+
