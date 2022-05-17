@@ -82,7 +82,11 @@ A production deployment framework using various DevOps tools. It uses **Jenkins 
     </tr>
   </table>
 
-### Step 2: Run the application on development server for POC. If you want to use any production webserver then use gunicorn.
+### Step 2: Run the application.
 
-To run it on development server, execute the below command in the root folder of this repository.</br>
-`python blaze.py`
+- To run it on development server, execute the below command in the root folder of this repository.</br>
+  `python blaze.py`
+
+- If you want to run the application on any webserver then I suggest use **Gunicorn**.
+
+
