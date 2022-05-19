@@ -145,3 +145,6 @@ tasks:
 
 ## Step 4: Configuration of Jenkins Worker Job
 
+A worker job will be a simple jenkins job that could take the version number as a build parameter and perform the deployment based on the configuration done in it.
+
+
