@@ -149,5 +149,33 @@ A worker job will be a simple jenkins job that could take the version number as 
 
 There is no specific sample job configuration that we could suggest as it could be anything, you might want to initiate a deployment using REST API or any client over the continuous deployment tool. You might want to interact with autosys for the jobs execution. You might want to update JIRA IDs. You might have to perform backup activities. Hence based on your requirements the configuration will be changed only the dynamic inputs that you required could be parameterized here and the value for those dynamic parameters, we can provide in the instruction file (YAML File).
 
+## Step 5: Configuration of Jenkins Master Job
 
+Once the configuration for all the worker job is completed then you need to create a master job as per the steps provided below.
+  1. blaze-client that you have downloaded while fulfiling the prerequisites, you need to set that client in the PATH variable.
+  2. Once the blaze-client executable is set in the PATH variable then you can use below sample pipeline script for the configuration.
+ ```
+ pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+            //bat For windows, sh for linux. Verify the client extension as well. Do not use .exe on linux :)
+                bat "blaze-client.exe --jenkins-server-url \"http://localhost:8080\" --tracker-url \"http://127.0.0.1:5000\" --jenkins-job-id ${BUILD_NUMBER} --jenkins-job-name \"${env.JOB_NAME}\" --taskbook \"taskbook.yml\" --app-name \"blaze\" --jenkins-username \"<username>\" --jenkins-secret \"<jenkins-secret>\" --blaze-secret \"<blaze-secret>\""
+            }
+        }
+    }
+}
+```
+### Blaze-Client Command Line Options:
+- **--jenkins-server-url:** Base url of the Jenkins server. For example http://localshot:8080
+- **--tracker-url:** Base url of the blaze tracker flask service. For example http://127.0.0.1:5000
+- **--jenkins-job-id:** <i>No need to change anything here</i>
+- **--jenkins-job-name:** <i>No need to change anything here</i>
+- **--taskbook:** Path of the taskbook YAML file
+- **--app-name:** Name of the registered application ( we will see that in detail later on ). Just ensure name must be in lowercase alphabets and does not have any special characters in it. Only underscore is allowed.
+- **--jenkins-username:** Username of the Jenkins User.
+- **--jenkins-sercret:** Password or authentication token of the Jenkins User
+- **--blaze-secret:** Blaze secret key used in the flask service for the authentication. Hint: Check it in the config.py file. You might have set "BLAZE_SECRET" environment variable in your system.
 
