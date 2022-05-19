@@ -147,4 +147,7 @@ tasks:
 
 A worker job will be a simple jenkins job that could take the version number as a build parameter and perform the deployment based on the configuration done in it.
 
+There is no specific sample job configuration that we could suggest as it could be anything, you might want to initiate a deployment using REST API or any client over the continuous deployment tool. You might want to interact with autosys for the jobs execution. You might want to update JIRA IDs. You might have to perform backup activities. Hence based on your requirements the configuration will be changed only the dynamic inputs that you required could be parameterized here and the value for those dynamic parameters, we can provide in the instruction file (YAML File).
+
+
 
