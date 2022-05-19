@@ -169,7 +169,7 @@ Once the configuration for all the worker job is completed then you need to crea
 }
 ```
 ### Blaze-Client Command Line Options:
-- **--jenkins-server-url:** Base url of the Jenkins server. For example http://localshot:8080
+- **--jenkins-server-url:** Base url of the Jenkins server. For example http://localhost:8080
 - **--tracker-url:** Base url of the blaze tracker flask service. For example http://127.0.0.1:5000
 - **--jenkins-job-id:** <i>No need to change anything here</i>
 - **--jenkins-job-name:** <i>No need to change anything here</i>
