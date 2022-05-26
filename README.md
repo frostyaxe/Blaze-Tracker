@@ -179,3 +179,17 @@ Once the configuration for all the worker job is completed then you need to crea
 - **--jenkins-sercret:** Password or authentication token of the Jenkins User
 - **--blaze-secret:** Blaze secret key used in the flask service for the authentication. Hint: Check it in the config.py file. You might have set "BLAZE_SECRET" environment variable in your system.
 
+### Configuring workers with the master job:
+
+- Copy the URL of a worker job and prepare the Jenkins job name using it
+  For example if the worker job url look like this -> http://localhost:8080/job/Production-Deployment/job/blaze-worker-app/
+  then you need to split it as shown here ---> http://localhost:8080/job/ Production-Deployment/job/blaze-worker-app 
+  then just remove the job/ from here Production-Deployment/job/blaze-worker-app
+  and the job name will be "<strong>Production-Deployment/blaze-worker-app</strong>"
+- Now create a parameter in the worker job with the name having following prefix "<b>blazeconfig_</b>"
+
+## Creation of Taskbook
+
+
+
+
