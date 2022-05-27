@@ -231,7 +231,7 @@ tasks
     <td>string</td>
     <td>NA</td>
     <td>It depicts the deployment phase. The value that you have mentioned in the Jenkins master job parameter "<strong>blaze.execution.category</strong>", you need to provide here</td>
-    <td>pre_deploy,release_deploy,post_deploy</td>
+    <td>pre_deploy, release_deploy, post_deploy</td>
   </tr>
   <tr>
     <td>config*</td>
@@ -246,4 +246,11 @@ tasks
     </td>
     <td>Deployment of app package_123</td>
   </tr>
+  <tr>
+    <td>skip</td>
+    <td>bool</td>
+    <td>False</td>
+    <td>If True then it skips the execution of that particular task. Widely used when an execution of a task gets failed and you do not need to re-run it instead of that you prefer to skip it.</td>
+    <td>True, False</td>
+  </tr> 
 </table>
