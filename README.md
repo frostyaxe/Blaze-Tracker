@@ -252,5 +252,12 @@ tasks
     <td>False</td>
     <td>If True then it skips the execution of that particular task. Widely used when an execution of a task gets failed and you do not need to re-run it instead of that you prefer to skip it.</td>
     <td>True, False</td>
-  </tr> 
+  </tr>
+  <tr>
+    <td>monitor</td>
+    <td>bool</td>
+    <td>True</td>
+    <td>By default, it handles all the execution of tasks sequentially in the foreground. If you specify the value as False then, execution will happen in the background. :warning: <mark>If it is False then, it will fire the task execution and forgets about the execution. Hence it will not monitor the execution at all **even if it is failed**</mark> </td>
+    <td>Deployment of app package_123</td>
+  </tr>
 </table>
