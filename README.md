@@ -257,7 +257,17 @@ tasks
     <td>monitor</td>
     <td>bool</td>
     <td>True</td>
-    <td>By default, it handles all the execution of tasks sequentially in the foreground. If you specify the value as False then, execution will happen in the background. :warning: <mark>If it is False then, it will fire the task execution and forgets about the execution. Hence it will not monitor the execution at all **even if it is failed**</mark> </td>
-    <td>Deployment of app package_123</td>
+    <td>By default, it handles all the execution of tasks sequentially in the foreground. If you specify the value as False then, execution will happen in the background.</br> :warning: <mark>If it is False then, it will fire the task execution and forgets about the execution status.</br> :warning: It will not monitor the execution at all <b>even if it is failed</b></mark> </td>
+    <td>True, False</td>
+  </tr>
+  <tr>
+    <td>allowFailure</td>
+    <td>bool</td>
+    <td>False</td>
+    <td>If True then even the execution fails, it will proceed with the execution of next task. </br>
+    :warning: If the execution of a task having this flag gets failed and you re-run the master job or resume the pipeline after the pause then, it will re-run that failed task.</br>
+    <b>If you do not want to re-run it then, use <i>skip</i> flag.</b>
+    </td>
+    <td>True, False/td>
   </tr>
 </table>
