@@ -292,4 +292,18 @@ dependsOn:
     </td>
     <td>True, False</td>
   </tr>
+  <tr>
+    <td>parameters</td>
+    <td>map of parameters</td>
+    <td>NA</td>
+    <td>Key will be name of the custom parameter present in the worker job and Value will be the desired value by using which you would like to build that worker job.</td>
+<td>
+<pre>
+parameters:
+    param1: "Value of the param1"
+    param2: "Value of the param2"
+    version: "app-1.0-123"
+</pre>
+   </td>
+  </tr>
 </table>
