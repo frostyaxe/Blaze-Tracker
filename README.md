@@ -187,7 +187,7 @@ Once the configuration for all the worker job is completed then you need to crea
   then just remove the job/ from here Production-Deployment/job/blaze-worker-app
   and the job name will be "<strong>Production-Deployment/blaze-worker-app</strong>"
 - Now create a parameter in the worker job with the name having following prefix "<b>blazeconfig_</b>"
-- Create another parameter named as "<strong>blaze.execution.category</strong> with the value as "<i>predeploy</i>". It depicts the phase for which the master job is created. You might be having predeployment, deployment and post deployment steps to be performed in the entire production deployment. Hence this allows you to define the category of the master job.
+- Create another parameter named as "<strong>blaze.execution.category</strong>" with the value as "<i>predeploy</i>". It depicts the phase for which the master job is created. You might be having predeployment, deployment and post deployment steps to be performed in the entire production deployment. Hence this allows you to define the category of the master job.
 
 ## Step 5: Creation of Taskbook
 
@@ -225,5 +225,12 @@ tasks
     <td>NA</td>
     <td>Any descriptive name containing alphanumeric values separated by space. Do not use any specical character except underscore.</td>
     <td>Deployment of app package_123</td>
+  </tr>
+    <tr>
+    <td>category*</td>
+    <td>string</td>
+    <td>NA</td>
+    <td>It depicts the deployment phase. The value that you have mentioned in the Jenkins master job parameter "<strong>blaze.execution.category</strong>", you need to provide here</td>
+    <td>pre_deploy,release_deploy,post_deploy</td>
   </tr>
 </table>
