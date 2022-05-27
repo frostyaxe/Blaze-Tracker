@@ -226,11 +226,24 @@ tasks
     <td>Any descriptive name containing alphanumeric values separated by space. Do not use any specical character except underscore.</td>
     <td>Deployment of app package_123</td>
   </tr>
-    <tr>
+  <tr>
     <td>category*</td>
     <td>string</td>
     <td>NA</td>
     <td>It depicts the deployment phase. The value that you have mentioned in the Jenkins master job parameter "<strong>blaze.execution.category</strong>", you need to provide here</td>
     <td>pre_deploy,release_deploy,post_deploy</td>
+  </tr>
+  <tr>
+    <td>config*</td>
+    <td>string</td>
+    <td>NA</td>
+    <td>
+      Either it could be user defined config that you can get it from the Jenkins Master Job parameter having the prefix as "<b>blazeconfig_</b>" or it could be predefined config such as "<b>pause</b>"
+      <ul>
+        <li>All the user defined parameters will be having the prefix as "<b>blazeconfig_</b>" in the Jenkins master job.</li>
+        <li>Predefined parameter: "<b>pause</b> - To halt the pipeline for manual verification."</li>
+      </ul>
+    </td>
+    <td>Deployment of app package_123</td>
   </tr>
 </table>
