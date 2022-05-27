@@ -270,4 +270,26 @@ tasks
     </td>
     <td>True, False/td>
   </tr>
+  <tr>
+    <td>dependsOn</td>
+    <td>list of string</td>
+    <td>[]</td>
+    <td>Name of the task(s) on which the execution of this task depends. Based on the execution status of all the tasks, it will allow the current task to initiatte the execution of itself.</td>
+    <td>
+     <pre>
+dependsOn:
+    - "Task 1"
+    - "Task 2"
+     </pre>
+    </td>
+  </tr>
+  <tr>
+    <td>replay</td>
+    <td>boolean</td>
+    <td>False</td>
+    <td>Default behavior of the framework does not allow to re-run the successful task. But, in case, you want to override this behavior then you can assign the value as True. </br>
+    :warning: upon the Jenkins master job retrigger or resumption of the pipeline execution, it will retrigger the job again, if the value is True. Hence once the execution of the task having this flag (with True value) is completed then, you need to update the YAML and update it to False.
+    </td>
+    <td>True, False</td>
+  </tr>
 </table>
