@@ -26,6 +26,8 @@ from gc import collect
 from . import ApplicationTableColumns
 from . import TableName
 from . import TrackerColumns
+from yaml import load
+import random, string
 
 class Dashboard(Resource):
     
@@ -111,4 +113,28 @@ class DashboardTasks(Resource):
         finally:
             del task_details
             collect()
+            
+class DeploymentFlow(Resource):
+    
+    def __init__(self, app):
+        self.app = app
+    
+    def get(self, app_name):  
+        with open("E:\\Abhishek\\Eclipse Projects\\BLAZE\\blaze-client\\taskbook.yml") as f:
+            yaml_data = load(f)
+            task_data = [ {task_data["name"]:{"skip": task_data["skip"] if "skip" in task_data else False, "is_pause": True if task_data["config"] == "pause" else False }} for task_data in yaml_data["tasks"]  ]
+        
+        
+        task_data_len = len(task_data)
+        indexes = []
+        def get_random_ids():
+            return ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+        for index in range(0,task_data_len):
+            random_index = get_random_ids()
+            while random_index in indexes:
+                random_index = get_random_ids()
+            indexes.append(random_index)
+            for _, details in task_data[index].items():
+                details.update({"index":random_index})
+        return make_response(render_template("deployment_flow.j2",app_name=app_name, task_data=task_data),200)
         

@@ -1,0 +1,67 @@
+{% extends "base.j2" %}
+{% block title %}
+	Home
+{% endblock %}
+
+{% block external_css %}
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/dashboard.css') }}" />
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/sidebar.css') }}" />
+{% endblock %}
+
+{% block external_js %}
+
+{% endblock %}
+
+{% block content %}
+
+<header>
+  <!-- Sidebar -->
+  <nav
+       id="sidebarMenu"
+       class="collapse d-lg-block sidebar collapse bg-light"
+       >
+    <div class="position-sticky">
+
+      <div class="list-group list-group-flush mx-3 mt-2">
+     
+		<a class="btn btn-outline-dark mt-5" href="/{{ app_name }}/view/dashboard">
+        	<span>View Dashboard</span>
+        </a>
+      </div>
+   
+    </div>
+  </nav>
+  <!-- Sidebar -->
+
+</header>
+<div class="mermaid d-flex justify-content-center mt-5">
+
+flowchart TD
+	classDef someClass fill:#f96;
+	{% set last_task = {'last_val':""} %}
+    {% for task in task_data %}
+    	{% set is_first_task = loop.first %}
+    	{% set is_last_task = loop.last %}
+    	{% for task_name, task_details in task.items() %}
+    		
+	    	{% if is_first_task %}
+	    	A[Start]--> {{ task_details["index"] }}[{{task_name}}]
+	    	{% else %}
+	    	{{last_task["last_val"]}} --> {{ task_details["index"]  }}[{{task_name}}]   
+	    	{% endif %}
+	    	{% if task_details["is_pause"] %} {%raw%}class{%endraw%} {{task_details["index"]}} someClass;  {%endif%}
+	    	{% if last_task.update({'last_val':task_details["index"]+'['|e + task_name +']'|e})  %}{% endif %}
+	    	{% if is_last_task %}
+	    	{{ task_details["index"]  }}[{{task_name}}] --> Z[End]
+	    	{% endif %}
+	    	
+    	{%endfor%}
+    {% endfor %}
+</div>
+	<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+	<script>mermaid.initialize({startOnLoad:true, theme: (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ?
+	    "neutral" :
+	    "default" // [3]
+	});</script>
+	<script src="{{ url_for('static',filename='components/blaze-footer.js') }}" ></script>
+{% endblock %}
