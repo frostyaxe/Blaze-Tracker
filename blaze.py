@@ -48,6 +48,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = token_hex(16)
 app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=5)
 api = Api(app)
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Adding index resource
 api.add_resource(Index, BlazeUrls.INDEX, resource_class_kwargs={'app': app})
