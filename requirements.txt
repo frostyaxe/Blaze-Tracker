@@ -4,3 +4,4 @@ python-jenkins
 pyjwt
 flask_login
 schemadict
+pyyaml
