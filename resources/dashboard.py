@@ -26,6 +26,10 @@ from gc import collect
 from . import ApplicationTableColumns
 from . import TableName
 from . import TrackerColumns
+from . import safe_load,YAMLError 
+import random, string
+from . import validate_json
+from . import secure_filename, path, remove, flash
 
 class Dashboard(Resource):
     
@@ -111,4 +115,80 @@ class DashboardTasks(Resource):
         finally:
             del task_details
             collect()
-        
+            
+class DeploymentFlow(Resource):
+    ALLOWED_EXTENSIONS = {'yaml',"YAML","yml"}
+    
+    def __init__(self, app):
+        self.app = app
+    
+    def allowed_file(self, filename):
+        return '.' in filename and \
+               filename.rsplit('.', 1)[1].lower() in DeploymentFlow.ALLOWED_EXTENSIONS
+               
+    def post(self, app_name):
+        from . import request, redirect
+        if 'file' not in request.files:
+            flash('No selected file')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and self.allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = path.join(self.app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
+            try:
+                with open(filepath) as f:
+                    yaml_data = safe_load(f)
+            except YAMLError as e:
+                flash_error = ""
+                flash_error += "Error while parsing YAML file:\n"
+                if hasattr(e, 'problem_mark'):
+                    if e.context != None:
+                        flash_error += '  Error says\n' + str(e.problem_mark) + '\n  ' + \
+                            str(e.problem) + ' ' + str(e.context) + \
+                            '\nPlease correct data and retry.'
+                    else:
+                        flash_error += '  parser says\n' + str(e.problem_mark) + '\n  ' + \
+                            str(e.problem) + '\nPlease correct data and retry.'
+                else:
+                    flash_error +=  "Something went wrong while parsing yaml file: " + str(e)
+                flash(flash_error)
+                return redirect(request.url) 
+            if f.closed:
+                remove(filepath)     
+            status, err_msgs = validate_json(yaml_data)
+            if status:
+                task_data = [ {
+                    task_data["name"]:
+                        {   "is_skip": task_data["skip"] if "skip" in task_data else False, 
+                            "is_pause": True if task_data["config"] == "pause" else False,
+                            "is_monitor": task_data["monitor"] if "monitor" in task_data else True,
+                            "category":  task_data["category"] if "category" in task_data else "Unknown",
+                            "is_failure_allowed": task_data["allow_failure"] if "allow_failure" in task_data else False,
+                        }
+                       
+                    } 
+                for task_data in yaml_data["tasks"]  ]
+            
+                
+                task_data_len = len(task_data)
+                indexes = []
+                def get_random_ids():
+                    return ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+                for index in range(0,task_data_len):
+                    random_index = get_random_ids()
+                    while random_index in indexes:
+                        random_index = get_random_ids()
+                    indexes.append(random_index)
+                    for _, details in task_data[index].items():
+                        details.update({"index":random_index})
+                return make_response(render_template("deployment_flow.j2",app_name=app_name, task_data=task_data,error=status),200)
+            return make_response(render_template("deployment_flow.j2",app_name=app_name,error=status,err_messages=err_msgs),200)
+        else:
+            flash('Only YAML Files are allowed!')
+            return redirect(request.url)
+    def get(self, app_name):  
+        return make_response(render_template("deployment_flow.j2",app_name=app_name),200)

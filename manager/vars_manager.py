@@ -33,6 +33,7 @@ class BlazeUrls:
     DASHBOARD_PAGE = '/<app_name>/view/dashboard'
     DASHBOARD_GET_TASKS = '/<app_name>/getTasks'
     DASHBOARD_RESUME_PIPELINE = '/<app_name>/task/resumePipeline'
+    DEPLOYMENT_FLOW = '/<app_name>/view/deploymentFlow'
     
     # Paths for task APIs
     ADD_TASK = '/<app_name>/task/add/details'
@@ -59,6 +60,7 @@ class BlazeUrls:
     GET_REMOVE_TRACKER_CODE = '/<app_name>/getRemoveTrackerCode'
     LICENSE_PAGE = '/license'
     ABOUT = "/about"
+    
     
     
 class ResourceTemplatesName:
@@ -120,5 +122,4 @@ class ExecutionStatus:
     PAUSED = "PAUSED"
     FAILURE = "FAILURE"
     RESUMED = "RESUMED"
-
     

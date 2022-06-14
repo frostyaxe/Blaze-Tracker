@@ -29,7 +29,7 @@ __version__ = "1.0"
 from flask import Flask, render_template, request
 from flask_restful import Api
 from resources.index import Index
-from resources.dashboard import Dashboard,DashboardTasks
+from resources.dashboard import Dashboard,DashboardTasks, DeploymentFlow
 from resources.registration import Registration, UpdateRegistrationDetails
 from resources.task import AddTask, UpdateTaskStatus, GetTaskStatus, GetTaskJobId, UpdateJobId, DeleteTask, VerifyTaskAuth
 from resources.resume import ResumeResource
@@ -48,6 +48,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = token_hex(16)
 app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=5)
 api = Api(app)
+UPLOAD_FOLDER = 'uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Adding index resource
 api.add_resource(Index, BlazeUrls.INDEX, resource_class_kwargs={'app': app})
@@ -90,6 +92,9 @@ api.add_resource(License, BlazeUrls.LICENSE_PAGE, resource_class_kwargs={'app': 
 
 # Adding resources to display about page
 api.add_resource(About, BlazeUrls.ABOUT, resource_class_kwargs={'app': app})
+
+# Adding resource to display the deployment flow based on the details present in YAML taskbook.
+api.add_resource(DeploymentFlow, BlazeUrls.DEPLOYMENT_FLOW, resource_class_kwargs={'app': app})
 
 def __set_up__():
     from utilities.sqlite_db_utils import SQLLiteUtils
