@@ -6,6 +6,24 @@
 {% block external_css %}
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/dashboard.css') }}" />
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/sidebar.css') }}" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/ >
+	<style>
+	.mermaid {width:120% !important}
+	div.scroll {
+        width: 200px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        white-space: nowrap;
+    }
+
+li.legends:before {
+  content: "\f111 "; /* FontAwesome Unicode */
+  font-family: FontAwesome;
+  display: inline-block;
+  margin-left: -1.3em; /* same as padding-left set on li */
+  width: 1.3em; /* same as padding-left set on li */
+}
+	</style>
 {% endblock %}
 
 {% block external_js %}
@@ -34,34 +52,119 @@
   <!-- Sidebar -->
 
 </header>
-<div class="mermaid d-flex justify-content-center mt-5">
+</br>
+<form method=post enctype=multipart/form-data class"mb-5">
+	<div class="input-group">
+	  <input type="file" name="file" class="form-control" id="taskbookUpload" aria-describedby="taskbookUploadBtn" aria-label="Upload">
+	  <input type="submit" class="btn btn-outline-secondary" type="button" id="taskbookUploadBtn" value="Upload"></input>
+	</div>
+</form>
 
-flowchart TD
-	classDef someClass fill:#f96;
-	{% set last_task = {'last_val':""} %}
+{% with messages = get_flashed_messages() %}
+   {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-warning" role="alert">
+		  <pre>{{ message }}</pre>
+		</div>
+        {% endfor %}
+  {% endif %}
+ {% endwith %}
+
+
+{% if request.method == 'POST' %}
+{% if error %}
+<div id="container" class="mermaid scroll justify-content-center mt-5 ">
+
+flowchart LR
+	classDef pauseclass fill:#000,color:#fff;
+    classDef skipclass fill:#fc7f03,color:#fff;
+    classDef execclass fill:#6cbb3c,color:#fff;
+    classDef afclass fill:#900d09,color:#fff;
+    linkStyle default fill:red;
+	{% set last_task = {'last_val':"",'last_monitor_status':True,'last_category':"","category_changed":False} %}
     {% for task in task_data %}
     	{% set is_first_task = loop.first %}
     	{% set is_last_task = loop.last %}
     	{% for task_name, task_details in task.items() %}
-    		
 	    	{% if is_first_task %}
+	    	{% if last_task["last_category"] != task_details["category"] %} subgraph {{task_details["category"]}}{%endif%}
 	    	A[Start]--> {{ task_details["index"] }}[{{task_name}}]
+	    	{% if last_task.update({'last_category':task_details["category"]}) %}{% endif %}
 	    	{% else %}
-	    	{{last_task["last_val"]}} --> {{ task_details["index"]  }}[{{task_name}}]   
+	    	
+	    	{% if last_task["last_category"] != task_details["category"] %} 
+	    	end
+	    	subgraph {{task_details["category"]}}
+	    	{%endif%}
+	    	{{last_task["last_val"]}} --> {% if last_task["last_monitor_status"] == False and last_task["last_category"] == task_details["category"] %}| Parallel Execution |{% endif %} {{ task_details["index"]  }}[{{task_name}}]   
 	    	{% endif %}
-	    	{% if task_details["is_pause"] %} {%raw%}class{%endraw%} {{task_details["index"]}} someClass;  {%endif%}
+	    	{% if task_details["is_pause"] %} 
+		    	{%raw%}class{%endraw%} {{task_details["index"]}} pauseclass;  
+		    {% elif task_details["is_skip"] %} 
+		    	{%raw%}class{%endraw%} {{task_details["index"]}} skipclass;  
+		    {% elif task_details["is_failure_allowed"] %} 
+		    {%raw%}class{%endraw%} {{task_details["index"]}} afclass;  
+		    {% else %}
+		    	{%raw%}class{%endraw%} {{task_details["index"]}} execclass;  
+	    	{%endif%}
+	    	
 	    	{% if last_task.update({'last_val':task_details["index"]+'['|e + task_name +']'|e})  %}{% endif %}
+	    	{% if last_task.update({'last_monitor_status':task_details["is_monitor"]}) %}{% endif %}
+	    	{% if last_task["last_category"] != task_details["category"] %} {% if last_task.update({'category_changed':True}) %}  {%endif%} {%endif%}
+	    	{% if last_task.update({'last_category':task_details["category"]}) %}{% endif %}
 	    	{% if is_last_task %}
 	    	{{ task_details["index"]  }}[{{task_name}}] --> Z[End]
+	    	{% if last_task["last_category"] != task_details["category"] %} {% if last_task.update({'category_changed':True}) %} {%endif%} {%endif%}
+	    	{% if last_task["category_changed"] %} end {%endif%}
 	    	{% endif %}
 	    	
     	{%endfor%}
     {% endfor %}
 </div>
-	<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-	<script>mermaid.initialize({startOnLoad:true, theme: (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ?
-	    "neutral" :
+
+<div class="d-flex justify-content-end mt-5">
+	<ul >
+	    <li class="legends" style="color: #6cbb3c">Task will be executed</li>
+	    <li class="legends">Execution will be paused</li>
+	    <li class="legends" style="color: #fc7f03">Task will be skipped</li>
+	    <li class="legends" style="color: #900d09">Task execution failure will be ignored</li>
+	</ul>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.1/mermaid.min.js" integrity="sha512-7AtDHIWTEL1Km2V9clac6gs1x3F67rS6HGZMBYaUogsohvODnWrq5GkW9WRh1XjTMs4Um9hjGUNSjI+3XluoZQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script>mermaid.initialize({startOnLoad:true,flowchart:{
+            useMaxWidth:false,
+            htmlLabels:true,
+            diagramPadding: 100
+        }, theme: (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) ?
+	    "default" :
 	    "default" // [3]
-	});</script>
+	});
+	</script>
+	
 	<script src="{{ url_for('static',filename='components/blaze-footer.js') }}" ></script>
+{% else %}
+<div class="row mt-5">
+	<div class="col-4">
+		<div id="error-list" class="list-group">
+			{% for index in range(err_messages|length) %}
+			  <a class="list-group-item list-group-item-action" href="#error-{{index}}">Error {{index}}</a>
+			{%endfor%}
+		</div>
+	</div>
+	<div class="col-8" style="overflow-y: scroll; height: 80vh;">
+		<div data-bs-spy="scroll" data-bs-target="#error-list" data-bs-offset="0" tabindex="0">
+			{% for err in  err_messages %}
+				<nav id="error-{{loop.index0}}" class="navbar navbar-dark bg-dark mb-5">
+					<div class="container-fluid">
+						<a class="navbar-brand">Error {{loop.index0}}</a>
+					</div>
+				</nav>
+				<pre style="word-wrap: break-word;">{{err}}</pre>
+			{%endfor%}
+		</div>
+	</div>
+</div>
+{% endif %}
+{%endif%}
 {% endblock %}
