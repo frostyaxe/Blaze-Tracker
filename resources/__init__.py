@@ -1,14 +1,18 @@
-from flask_restful import Resource
-from flask import render_template, make_response, request, redirect, url_for, session, flash
-from manager.auth_manager import decode_password, auth_required
-from config import DB
+from datetime import datetime
+from os import path, remove
 from sqlite3 import Error
-from utilities.sqlite_db_utils import SQLLiteUtils
-from manager.vars_manager import LICENSE_FILE, ResourceTemplatesName, BlazeUrls, AuthenticationTableColumns, TableName, ResponseStatus, ApplicationTableColumns, TrackerColumns, ExecutionStatus, RemoveTrackerColumns
-from os import path,remove
-from support.taskbook_schema_validator import validate_json
+
+from flask import render_template, make_response, redirect, url_for, flash
+from flask_restful import Resource
+from pytz import all_timezones, timezone, utc
 from werkzeug.utils import secure_filename
-from yaml import safe_load,YAMLError 
+
+from config import DB
+from manager.auth_manager import decode_password, auth_required
+from manager.vars_manager import LICENSE_FILE, ResourceTemplatesName, BlazeUrls, AuthenticationTableColumns, TableName, ResponseStatus, ApplicationTableColumns, TrackerColumns, ExecutionStatus, RemoveTrackerColumns
+from support.taskbook_schema_validator import validate_json
+from utilities.sqlite_db_utils import SQLLiteUtils
+
 
 DATABASE_NAME = "{}.db".format(DB["DATABASE_NAME"])
 TIMESTAMP_FORMAT = "%d-%m-%Y %H:%M:%S %p"

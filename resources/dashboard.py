@@ -15,21 +15,28 @@ Created on 09-Apr-2022
 
 '''
 
-from . import Resource
-from . import make_response, render_template
-from factory import  sqllite_dict_factory
-from . import Error
-from . import get_db_obj, close_db_connection
-from . import ResourceTemplatesName
-from . import verify_error_response
 from gc import collect
+import random, string
+
+from yaml import safe_load, YAMLError 
+
+from factory import  sqllite_dict_factory
+
 from . import ApplicationTableColumns
+from . import Error
+from . import Resource
+from . import ResourceTemplatesName
 from . import TableName
 from . import TrackerColumns
-from . import safe_load,YAMLError 
-import random, string
-from . import validate_json
+from . import all_timezones, TIMESTAMP_FORMAT
+from . import datetime, timezone as pytz_timezone, utc
+from . import get_db_obj, close_db_connection
+from . import make_response, render_template
+from flask import request
 from . import secure_filename, path, remove, flash
+from . import validate_json
+from . import verify_error_response
+
 
 class Dashboard(Resource):
     
@@ -108,10 +115,17 @@ class DashboardTasks(Resource):
    
     def get(self,app_name):
         try:
+            timezone = request.args.get('timezone', "UTC", type=str)
+            
             task_details = self.__get_task_details__(app_name)
+            if timezone != "UTC" and timezone in all_timezones:
+                for data in task_details:
+                    data[TrackerColumns.EXECUTION_TIMESTAMP]=datetime.strptime(data[TrackerColumns.EXECUTION_TIMESTAMP],TIMESTAMP_FORMAT).replace(tzinfo=utc).astimezone(pytz_timezone(timezone)).strftime(TIMESTAMP_FORMAT)
             response_obj = verify_error_response(task_details,500,"INTERNAL SERVER ERROR","Unable to fetch the task details. Please check the logs.")
             if response_obj: return response_obj
-            return make_response(render_template(ResourceTemplatesName.TASK_TEMPLATE, task_details=task_details),200)
+            return make_response(render_template(ResourceTemplatesName.TASK_TEMPLATE, task_details=task_details,timezone=timezone),200)
+        except Exception as e:
+            print(e)
         finally:
             del task_details
             collect()
@@ -127,7 +141,7 @@ class DeploymentFlow(Resource):
                filename.rsplit('.', 1)[1].lower() in DeploymentFlow.ALLOWED_EXTENSIONS
                
     def post(self, app_name):
-        from . import request, redirect
+        from . import  redirect
         if 'file' not in request.files:
             flash('No selected file')
             return redirect(request.url)
