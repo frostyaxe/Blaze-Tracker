@@ -20,8 +20,7 @@ Created on 03-May-2022
 from . import Resource
 from . import render_template
 from . import make_response
-from . import request
-from . import session
+from flask import request, session
 from . import redirect
 from . import decode_password
 from . import ResourceTemplatesName, BlazeUrls

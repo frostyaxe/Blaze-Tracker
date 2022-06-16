@@ -166,10 +166,12 @@ function resumePipeline(pauseId, taskName){
 
 function updateTasks(){
 {
+   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
    $.ajax({
 
      type: "GET",
      url: '/'+appName+"/getTasks",
+	 data: {"timezone":timezone},
      success: function(data) {
           $('#tasksContainer').html(data);
      }
