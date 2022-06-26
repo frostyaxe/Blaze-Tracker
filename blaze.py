@@ -31,17 +31,19 @@ from flask_restful import Api
 from resources.index import Index
 from resources.dashboard import Dashboard,DashboardTasks, DeploymentFlow
 from resources.registration import Registration, UpdateRegistrationDetails
-from resources.task import AddTask, UpdateTaskStatus, GetTaskStatus, GetTaskJobId, UpdateJobId, DeleteTask, VerifyTaskAuth
+from resources.task import AddTask, UpdateTaskStatus, GetTaskStatus, GetTaskJobId, UpdateJobId, DeleteTask, VerifyTaskAuth, QueuePaused
 from resources.resume import ResumeResource
-from resources.admin import AdminLogin, AdminHome, AdminPasswordChange, AdminLogout
+from resources.admin import AdminLogin, AdminHome, AdminPasswordChange, AdminLogout, AdminNotifier, AdminControlNoticeDisplay
 from resources.tracker import TrackerRemove, RemoveCode
+from resources.build_queue import ManageBuildQueue, DisplayBuildQueue
 from resources.unregistration import Unregistration
 from resources.update_application import UpdateApplication,GetAppDetails
 from resources.license import License
 from resources.about import About
+from resources.current_running_tasks import CurrentRunningTasks, FetchRunningTasks
 from secrets import token_hex
 from datetime import timedelta
-from manager.vars_manager import BlazeUrls, ResourceTemplatesName
+from manager.vars_manager import BlazeUrls, ResourceTemplatesName, NotificationColumns
 
 # Initialization of the variables
 app = Flask(__name__)
@@ -82,6 +84,8 @@ api.add_resource(AdminLogout, BlazeUrls.ADMIN_LOGOUT, resource_class_kwargs={'ap
 api.add_resource(UpdateApplication, BlazeUrls.UPDATE_APPLICATION_DETAILS, resource_class_kwargs={'app': app})
 api.add_resource(UpdateRegistrationDetails, BlazeUrls.UPDATE_REGISTRATION_DETAILS, resource_class_kwargs={'app': app})
 api.add_resource(GetAppDetails, BlazeUrls.GET_APPLICATION_DETAILS,resource_class_kwargs={'app': app})
+api.add_resource(AdminNotifier, BlazeUrls.BLAZE_NOTIFIER,resource_class_kwargs={'app': app})
+api.add_resource(AdminControlNoticeDisplay, BlazeUrls.ADMIN_MANAGE_NOTICE,resource_class_kwargs={'app': app})
 
 # Adding resources related to handling the tracker removal process
 api.add_resource(TrackerRemove, BlazeUrls.REMOVE_TRACKER_WITH_CODE, resource_class_kwargs={'app': app})
@@ -96,16 +100,30 @@ api.add_resource(About, BlazeUrls.ABOUT, resource_class_kwargs={'app': app})
 # Adding resource to display the deployment flow based on the details present in YAML taskbook.
 api.add_resource(DeploymentFlow, BlazeUrls.DEPLOYMENT_FLOW, resource_class_kwargs={'app': app})
 
+# Adding resources to handle the current running tasks dashboard page
+api.add_resource(CurrentRunningTasks, BlazeUrls.DASHBOARD_CURRENT_TASKS, resource_class_kwargs={'app': app})
+api.add_resource(FetchRunningTasks, BlazeUrls.DASHBOARD_FETCH_RUNNING_TASKS, resource_class_kwargs={'app': app})
+
+# Adding resources to handle the pausing/resuming the build queue
+api.add_resource(QueuePaused, BlazeUrls.GET_PAUSE_BUILD_QUEUE_STATUS, resource_class_kwargs={'app': app})
+api.add_resource(ManageBuildQueue, BlazeUrls.MANAGE_BUILD_QUEUE, resource_class_kwargs={'app': app})
+api.add_resource(DisplayBuildQueue, BlazeUrls.DISPLAY_BUILD_QUEUE, resource_class_kwargs={'app': app})
+
 def __set_up__():
-    from utilities.sqlite_db_utils import SQLLiteUtils
-    from config import DB
-    from support.setup import get_setup_statements
-    sql_db_utils = SQLLiteUtils(app)
-    sql_db_utils.create_connection("{0}.db".format(DB["DATABASE_NAME"]))
-    for statement in get_setup_statements():
-        sql_db_utils.execute_statement(statement)
-    
-    sql_db_utils.conn.close()
+    try:
+        from utilities.sqlite_db_utils import SQLLiteUtils
+        from config import DB
+        from support.setup import get_setup_statements
+        sql_db_utils = SQLLiteUtils(app)
+        sql_db_utils.create_connection("{0}.db".format(DB["DATABASE_NAME"]))
+        for statement in get_setup_statements():
+            sql_db_utils.execute_statement(statement)
+    except Exception as e:
+        raise Exception(e)    
+    finally:
+        if sql_db_utils:
+            if sql_db_utils.conn:
+                sql_db_utils.conn.close()
    
 def __validate_config__():
     from support.config_schema_validator import validate_config 
@@ -120,6 +138,37 @@ def page_not_found(e):
     if request.accept_mimetypes['text/html']:
         return render_template(ResourceTemplatesName.ERROR_404_PAGE), 404
     return {"status":"failure","message":"Requested resource does not exist!"}, 404
+
+@app.context_processor
+def inject_dict_for_all_templates():
+    try:
+        from utilities.sqlite_db_utils import SQLLiteUtils
+        from config import DB
+        from factory.sqllite_dict_factory import dict_factory
+        from manager.vars_manager import TableName
+        sql_db_utils = SQLLiteUtils(app)
+        sql_db_utils.create_connection("{0}.db".format(DB["DATABASE_NAME"]))
+        sql_db_utils.conn.row_factory = dict_factory
+        sql = '''
+                select * from {notification_table}
+              '''.format(notification_table=TableName.NOTIFICATION)
+               
+        sql_db_utils.execute_statement(sql)
+        all_records =  sql_db_utils.get_cursor().fetchall()
+        
+        if all_records:
+            data = all_records[-1]
+            return dict({NotificationColumns.HEADING:data[NotificationColumns.HEADING],NotificationColumns.MESSAGE:data[NotificationColumns.MESSAGE],NotificationColumns.IS_DISPLAYED:data[NotificationColumns.IS_DISPLAYED]})
+        else:
+            return dict({NotificationColumns.IS_DISPLAYED:0})
+    except Exception as e:
+        print(e)
+        return dict({NotificationColumns.IS_DISPLAYED:0})
+    finally:
+        if sql_db_utils:
+            if sql_db_utils.conn:
+                sql_db_utils.conn.close()
+    
 
 # Execution entry point
 

@@ -31,6 +31,11 @@ from . import close_db_connection
 from . import AuthenticationTableColumns
 from . import TableName
 from . import ResponseStatus
+from . import validate_fields
+
+
+NEW_CONFIRM_PASSWORD_FIELDS = [ "newPassword", "confirmPassword" ]
+NOTIFICATION_FIELDS = [ "notificationTitle", "notificationMessage" ]
 
 class AdminLogin(Resource):
     
@@ -114,7 +119,9 @@ class AdminPasswordChange(Resource):
             request_json = request.get_json()
             if request_json == None:
                 return {"status" : ResponseStatus.FAILURE, "message" : "Unable to read the details from payload. Please make sure it is in JSON format"}, 400
-            # Field validation is missing!
+            validation = validate_fields(NEW_CONFIRM_PASSWORD_FIELDS, request_json)
+            if validation != None:
+                return {"status" : ResponseStatus.FAILURE, "message" : validation}, 400
             new_password = request_json["newPassword"]
             confirm_password = request_json["confirmPassword"]
             if new_password != confirm_password:
@@ -142,4 +149,70 @@ class AdminLogout(Resource):
             session["authenticated"] = False
             [session.pop(key) for key in list(session.keys())]
         return make_response(render_template(ResourceTemplatesName.ADMIN_LOGIN, alert_message="You have been logged out!", alert_type="info"))
+    
+
+class AdminNotifier(Resource):
+    
+    def __init__(self,app):
+        self.app = app
+     
+    @auth_required    
+    def get(self):
+        return make_response(render_template(ResourceTemplatesName.NOTIFICATION))
+    
+    def __add_notification__(self,notification_title,notification_message):
+        try:
+            sql_db_utils = get_db_obj(self.app)
+            sql = '''DELETE FROM {table}
+            '''.format(table=TableName.NOTIFICATION)
+            sql_db_utils.execute_script(sql)
+            sql ='''INSERT INTO {table} VALUES(?,?,?)
+                '''.format(table=TableName.NOTIFICATION)
+            sql_db_utils.execute_statement(sql,record=(notification_title, notification_message,0))
+            return True
+        except Error as e:
+            print(e) #replace with the logger
+            return False
+        finally:
+            close_db_connection(sql_db_utils) 
+     
+    @auth_required   
+    def post(self):
+        request_json = request.get_json()
+        if request_json == None:
+            return {"status" : ResponseStatus.FAILURE, "message" : "Unable to read the details from payload. Please make sure it is in JSON format"}, 400
+        validation = validate_fields(NOTIFICATION_FIELDS, request_json)
+        if validation != None:
+            return {"status" : ResponseStatus.FAILURE, "message" : validation}, 400
+        notification_title = request_json["notificationTitle"]
+        notification_message= request_json["notificationMessage"]
+        if self.__add_notification__(notification_title,notification_message):
+            return {"status": ResponseStatus.SUCCESS, "message": "Notification details have been added successfully"}, 200
+        return {"status":ResponseStatus.FAILURE,"message": "Unable to add the notification details. Please check the logs"}, 500
+        
+
+class AdminControlNoticeDisplay(Resource):        
+    
+    def __init__(self,app):
+        self.app = app
+    
+    @auth_required    
+    def put(self,display_code=0):
+        try:
+            sql_db_utils = get_db_obj(self.app)
+            sql = '''UPDATE {table}
+                     SET IS_DISPLAYED = {0}
+            '''.format(display_code,table=TableName.NOTIFICATION)
+            sql_db_utils.execute_script(sql)
+            if display_code == 0:
+                return {"status": ResponseStatus.SUCCESS, "message": "Notification has been hidden successfully"}, 200
+            elif display_code >0:
+                return {"status": ResponseStatus.SUCCESS, "message": "Notification has been displayed successfully"}, 200
+            else:
+                return {"status":ResponseStatus.FAILURE,"message": "Invalid value provided by the user. is_displayed value must be either 0 or it must be greater than 0."}, 400
+        except Error as e:
+            print(e) #replace with the logger
+            return {"status":ResponseStatus.FAILURE,"message": str(e)}, 500
+        finally:
+            close_db_connection(sql_db_utils) 
         

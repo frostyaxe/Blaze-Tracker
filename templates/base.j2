@@ -47,9 +47,14 @@
 		<blaze-header style="z-index: 555"></blaze-header>
 	    <div id="page-content">
 		    <div class="container">
-			      
+		    {% if IS_DISPLAYED > 0 %}
+		    	<div class="alert alert-light shadow-sm mt-2" role="alert" >
+				  <h4 class="alert-heading">{{HEADING}}</h4>
+				  <p>{{MESSAGE}}</p>
+				</div>
+			{% endif %}   
 			      {% block content %}{% endblock %}
-			      
+			   
 		    </div>
 		</div>
 	    <blaze-footer style="z-index: 55"></blaze-footer>
