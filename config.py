@@ -40,9 +40,9 @@ Jenkins Details ( Need to Modify )
 
 JENKINS = {
     
-    "SERVER_URL": "< Jenkins server base url >",			# example: http://localhost:8080
-    "USERNAME": "< username >",				
-    "TOKEN": getenv("JENKINS_TOKEN")					# Add jenkins token in the environment variable
+    "SERVER_URL": "http://localhost:8080",
+    "USERNAME": "frostyaxe",
+    "TOKEN": getenv("JENKINS_TOKEN")
         
 }
 
@@ -53,7 +53,7 @@ Blaze Details ( No need to modify )
 BLAZE = {
     "AUTH":{
         
-            "SECRET_KEY" : getenv("BLAZE_SECRET"),			# Add blaze secret in the environment variable
+            "SECRET_KEY" : getenv("BLAZE_SECRET"),
             "ALGORITHM": "HS256"
                     
         }
@@ -65,11 +65,11 @@ Email Configuration Details ( Need to Modify )
 
 EMAIL = {
     
-    "SENDER": "< sender email ID >",
-    "SMTP": { "HOST": "< smtp host >", "PORT": < smtp port >},
-    "PROTOCOL" : "< protocol >",				 # Either TLS or SSL
-    "AUTH_REQUIRED": True,					 # Default True. If authentication is not required then update it to False
-    "USERNAME": "< sender email ID >",
-    "PASSWORD": getenv("EMAIL_SECRET")				 # Get the password or token from the environment variable
+    "SENDER": "prajapatiabhishek1996@gmail.com",
+    "SMTP": { "HOST": "smtp.gmail.com", "PORT": 465 },
+    "PROTOCOL" : "SSL",
+    "AUTH_REQUIRED": True,
+    "USERNAME": "prajapatiabhishek1996@gmail.com",
+    "PASSWORD": getenv("EMAIL_SECRET")
         
     }

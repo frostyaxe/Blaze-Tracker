@@ -18,6 +18,7 @@ Created on 13-May-2022
 
 import os
 
+
 PROJECT_ROOT_DIR = os.path.dirname(os.path.abspath("blaze.py"))
 LICENSE_FILE = "LICENSE"
 
@@ -61,6 +62,20 @@ class BlazeUrls:
     LICENSE_PAGE = '/license'
     ABOUT = "/about"
     
+    # Paths for blaze notifier APIs
+    BLAZE_NOTIFIER = "/admin/notifier"
+    ADMIN_MANAGE_NOTICE = "/admin/manageNotice/<int:display_code>"
+    
+    # Paths for running tasks dashboard APIs
+    DASHBOARD_CURRENT_TASKS = "/currentTasks"
+    DASHBOARD_FETCH_RUNNING_TASKS = "/fetchRunningTasks"
+    
+    # Paths for pausing the build queue
+    GET_PAUSE_BUILD_QUEUE_STATUS = "/queuePaused"
+    MANAGE_BUILD_QUEUE = "/admin/manageBuildQueue/<int:code>"
+    DISPLAY_BUILD_QUEUE = "/admin/manageBuildQueue"
+    
+    
     
     
 class ResourceTemplatesName:
@@ -78,12 +93,20 @@ class ResourceTemplatesName:
     BLAZE_UPDATE_PASSWORD = "update_blaze_pass_form.j2"
     LICENSE_PAGE = "license.j2"
     ABOUT_PAGE = "about.j2"
+    NOTIFICATION = "notification.j2"
+    CURRENT_TASKS_PAGE_TEMPLATE = "current_tasks_page.j2"
+    CURRENT_TASK_TEMPLATE = "current_tasks.j2"
+    DEPLOYMENT_FLOW = "deployment_flow.j2"
+    BUILD_QUEUE = "build_queue.j2"
+    
     
 class TableName:
     AUTH = "AUTHENTICATION"
     APP = "APPLICATION"
     REMOVE_TRACKER = "REMOVE_TRACKER"
     TRACKERS = "TRACKERS"
+    NOTIFICATION = "NOTIFICATION"
+    BUILD_QUEUE = "BUILD_QUEUE"
 
 class AuthenticationTableColumns:
     PASSWORD = "PASSWORD"
@@ -122,4 +145,10 @@ class ExecutionStatus:
     PAUSED = "PAUSED"
     FAILURE = "FAILURE"
     RESUMED = "RESUMED"
+    
+class NotificationColumns:
+    
+    HEADING = "HEADING"
+    MESSAGE = "MESSAGE"
+    IS_DISPLAYED = "IS_DISPLAYED"
     

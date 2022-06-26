@@ -4,7 +4,7 @@ Created on 08-May-2022
 @author: Abhishek Prajapati
 '''
 
-from manager.vars_manager import TableName, TrackerColumns, ApplicationTableColumns, RemoveTrackerColumns, AuthenticationTableColumns
+from manager.vars_manager import TableName, TrackerColumns, ApplicationTableColumns, RemoveTrackerColumns, AuthenticationTableColumns, NotificationColumns
 
 def get_setup_statements():
     from manager.auth_manager import encode_password
@@ -56,7 +56,7 @@ def get_setup_statements():
             secret=RemoveTrackerColumns.SECRET_CODE
         ),
         
-        '''CREATE TABLE IF NOT EXISTS AUTHENTICATION(
+        '''CREATE TABLE IF NOT EXISTS {table}(
            {username} TEXT NOT NULL PRIMARY KEY,
            {password} TEXT NOT NULL
         )'''.format(
@@ -65,6 +65,26 @@ def get_setup_statements():
             password=AuthenticationTableColumns.PASSWORD
         ),
         
+        '''CREATE TABLE IF NOT EXISTS {table}(
+           {title} TEXT NOT NULL,
+           {message} TEXT NOT NULL,
+           {is_displayed} INTEGER  NOT NULL
+        )'''.format(
+            table=TableName.NOTIFICATION,
+            title=NotificationColumns.HEADING,
+            message=NotificationColumns.MESSAGE,
+            is_displayed=NotificationColumns.IS_DISPLAYED
+        ),
+        
+        '''CREATE TABLE IF NOT EXISTS {table}(
+           {id} INTEGER PRIMARY KEY CHECK (ID = 0),
+           {is_queue_paused} INTEGER NOT NULL
+        )'''.format(
+            table="BUILD_QUEUE",
+            id="ID",
+            is_queue_paused="IS_QUEUE_PAUSED",
+        ),
+         '''INSERT OR IGNORE INTO {table} VALUES(0,0)'''.format(table="BUILD_QUEUE"),
         '''INSERT OR IGNORE INTO {table} VALUES("admin","{secret}")'''.format(table=TableName.AUTH,secret=encode_password("admin")),
         
         ]

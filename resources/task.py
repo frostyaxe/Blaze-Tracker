@@ -28,13 +28,44 @@ class VerifyTaskAuth(Resource):
     def get(self):
         return {"status":ResponseStatus.SUCCESS,"message":"client is authenticated!"}
 
+
+class VerifyQueuePaused(object):
+    
+    def __init__(self, sql_db_utils):
+        self.sql_db_utils=sql_db_utils
+        
+    def verify_pause_queued(self,close_connection=True):
+        try:
+            sql = '''
+                SELECT IS_QUEUE_PAUSED FROM {table} WHERE {ID} = ? 
+                '''.format(table="BUILD_QUEUE", ID="ID")
+            record=self.sql_db_utils.execute_statement(sql,record=(0,)).fetchone()
+            if record != None and len(record) > 0:
+                value = record[0]
+                if value > 0:
+                    return { "status" : ResponseStatus.ERROR, "message" : "Unable to place the request in queue! Please contact administrator." }, 503
+        except Error as e:
+            return { "status" : ResponseStatus.ERROR, "message" : "Unable to verify the queue pause due to following error: {0}".format(e) }, 500
+        finally:
+            if close_connection:
+                close_db_connection(self.sql_db_utils)   
+
+class QueuePaused(Resource):
+    
+    
+    def __init__(self, app):
+        self.app = app
+    
+    def get(self):
+        return VerifyQueuePaused(get_db_obj(self.app)).verify_pause_queued()
+            
 class AddTask(Resource):
     
     required_fields = [ "task_name", "master_job_name", "status"  ]
     
     def __init__(self, app):
         self.app = app
-        
+    
     def __get_recipients_ids__(self, app_name):
         try:
             sql_db_utils = get_db_obj(self.app)
@@ -53,6 +84,9 @@ class AddTask(Resource):
         try:
             from datetime import datetime
             sql_db_utils = get_db_obj(self.app)
+            result = VerifyQueuePaused(sql_db_utils).verify_pause_queued(close_connection=False)
+            if result:
+                return result
             sql = ''' INSERT OR IGNORE INTO {table}({app},{task},{url},{job_id},{status},{timestamp},{start},{end},{secret},{job_name})
                   VALUES(?,?,?,?,?,?,?,?,?,?) '''.format(
                       table=TableName.TRACKERS,
