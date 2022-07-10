@@ -12,6 +12,11 @@
 	Admin Login
 {% endblock %}
 
+{% block external_css %}
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/all.css') }}"/ >
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/fontawesome.css') }}">
+{% endblock %}
+
 {% block content %}
 <section class="background-radial-gradient overflow-hidden" style="top: 50%;right: 0;">
   <style>
@@ -79,13 +84,13 @@ section {
               <!-- Email input -->
               <div class="form-outline mb-4">
                 <input type="text" id="userId" name="userId" class="form-control" />
-                <label class="form-label" for="form3Example3">User ID</label>
+                <label class="form-label text-muted" for="form3Example3"><i class="fa-solid fa-user"></i> User ID</label>
               </div>
 
               <!-- Password input -->
               <div class="form-outline mb-4">
                 <input type="password" id="password" name="password" class="form-control" />
-                <label class="form-label" for="form3Example4">Password</label>
+                <label class="form-label text-muted" for="form3Example4"><i class="fa-solid fa-key"></i> Password</label>
               </div>
 
             

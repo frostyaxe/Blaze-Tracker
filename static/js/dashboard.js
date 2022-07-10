@@ -1,143 +1,101 @@
-
 /*
 	
 	Handles the execution in the dashboard page.
 
 */
-
-var appName = "default"
-
-function set_app_name(appName){
-	
-	this.appName = appName;
-	
+function check_empty(value){
+	if(value.trim()==''){
+		return true;
+	}
+	return false;
 }
-
-
-$(document).ready(function(){
-		
-		$('#generateCodeBtn').click(function(event){
-			var toastMessage =document.getElementById('toastMessage');//select id of toast
-	 		var toastBody = $("#toastBody")
-				$("#toastMessage").removeClass (function (index, className) {
-	  	  			return (className.match (/(^|\s)bg-\S+/g) || []).join(' ');
-				});
-					
-			
-				$.ajax("/"+appName+'/getRemoveTrackerCode', {
-					
-					    type: 'GET',  // http method
-						contentType: "application/json",
-						dataType: "json",
-					    success: function (response, status, xhr) {
-						console.log(response)
-							toastMessage.classList.add("bg-success");
-							toastBody.empty();
-							toastBody.append(response["message"]);
-							var bsAlert = new bootstrap.Toast(toastMessage);//inizialize it
-							bsAlert.show();//show it
-			
-								
-					    },
-					    error: function (jqXhr, textStatus, errorMessage) {
-							response = JSON.parse(jqXhr.responseText)
-							toastMessage.classList.add("bg-danger");
-							toastBody.empty();
-							toastBody.append(response["message"]);
-							var bsAlert = new bootstrap.Toast(toastMessage);//inizialize it
-							bsAlert.show();//show it
-					    }
-				});
-				
-				
-			
-		});
-});
-
-$(document).ready(function(){
-	
-	
-$('#trackerRemoveBtn').click(function(event){
+function displayToast(alertClass, message){
 	$("#toastMessage").removeClass (function (index, className) {
-  	  			return (className.match (/(^|\s)bg-\S+/g) || []).join(' ');
-			});
-		
-	var secretCode = $("#trackerRemoveTxt").val()
+	  	 return (className.match (/(^|\s)bg-\S+/g) || []).join(' ');
+	});
 	var toastMessage =document.getElementById('toastMessage');//select id of toast
 	var toastBody = $("#toastBody")
-	if(secretCode){
-			
-			$.ajax("/"+appName+'/removeTracker/'+secretCode, {
-				
-				    type: 'DELETE',  // http method
-					contentType: "application/json",
-					dataType: "json",
-				    success: function (response, status, xhr) {
-						toastMessage.classList.add("bg-success");
-						toastBody.empty();
-						toastBody.append(response["message"]);
-						
-							
-				    },
-				    error: function (jqXhr, textStatus, errorMessage) {
-						response = JSON.parse(jqXhr.responseText)
-						toastMessage.classList.add("bg-danger");
-						toastBody.empty();
-						toastBody.append(response["message"]);
-				    }
-			});
-			
-		   
-		} else {
-			toastMessage.classList.add("bg-danger");
-			toastBody.empty();
-			toastBody.append("Provided code must not be empty!");
-		}
-		
-		 var bsAlert = new bootstrap.Toast(toastMessage);//inizialize it
-		 bsAlert.show();//show it
+	toastMessage.classList.add(alertClass);
+	toastBody.empty();
+	toastBody.append(message);
+	var bsAlert = new bootstrap.Toast(toastMessage);//inizialize it
+	bsAlert.show();//show it
+}
+var appName = "default"
+var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+function set_app_name(appName){ this.appName = appName; }
+$(document).ready(function(){
+	$('#generateCodeBtn').click(function(event){
+		$.ajax("/"+appName+'/getRemoveTrackerCode', {
+		    type: 'GET',  // http method
+			contentType: "application/json",
+			dataType: "json",
+		    success: function (response, status, xhr) {
+			displayToast("bg-success",response["message"]);
+		    },
+		    error: function (jqXhr, textStatus, errorMessage) {
+				response = JSON.parse(jqXhr.responseText)
+				displayToast("bg-danger",response["message"])
+		    }
+		});
 	});
 });
-
-function resumePipeline(pauseId, taskName){
-	
-	$("#toastMessage").removeClass (function (index, className) {
-  	  			return (className.match (/(^|\s)bg-\S+/g) || []).join(' ');
+$(document).ready(function(){
+	$('#trackerRemoveBtn').click(function(event){
+	var secretCode = $("#trackerRemoveTxt").val()
+	if(secretCode){
+		$.ajax("/"+appName+'/removeTracker/'+secretCode, {
+			    type: 'DELETE',  // http method
+				contentType: "application/json",
+				dataType: "json",
+				beforeSend: function(){
+					if(check_empty(secretCode)) {
+						displayToast("bg-danger","Cannot proceed with the empty secret code.");
+						return false;
+					}
+				},
+			    success: function (response, status, xhr) {
+					displayToast("bg-success",response["message"]);
+			    },
+			    error: function (jqXhr, textStatus, errorMessage) {
+					response = JSON.parse(jqXhr.responseText)
+					displayToast("bg-danger",response["message"]);
+			    }
 			});
-		
+		} else {
+			displayToast("bg-danger","Provided code must not be empty!");
+		}
+	});
+});
+function resumePipeline(pauseId, taskName){
 	var secretCode = $("#inputSecretCode"+pauseId).val()
-	 var toastMessage =document.getElementById('toastMessage');//select id of toast
-	var toastBody = $("#toastBody")
 	$.ajax("/"+appName+'/task/resumePipeline', {
-		
 		    type: 'POST',  // http method
 			contentType: "application/json",
 			dataType: "json",
 		    data:JSON.stringify({resumeCode: secretCode, taskName: taskName  }),  // data to submit
+			beforeSend: function(){
+					if(check_empty(secretCode)) {
+						displayToast("bg-danger","Cannot proceed with the empty secret code.");
+						return false;
+					}
+					if(check_empty(taskName)) {
+						displayToast("bg-danger","Cannot proceed with the empty task name.");
+						return false;
+					}
+				},
 		    success: function (response, status, xhr) {
-				toastMessage.classList.add("bg-success");
-				toastBody.empty();
-				toastBody.append(response["message"]);
-				
+				displayToast("bg-success",response["message"]);
 				setTimeout(function() {
 			    location.reload();
 				}, 5000);
-							
 		    },
 		    error: function (jqXhr, textStatus, errorMessage) {
 				response = JSON.parse(jqXhr.responseText)
-				toastMessage.classList.add("bg-danger");
-				toastBody.empty();
-				toastBody.append(response["message"]);
+				displayToast("bg-danger",response["message"]);
 		    }
 	});
-	
-    var bsAlert = new bootstrap.Toast(toastMessage);//inizialize it
-    bsAlert.show();//show it
-
 }
-
-
 (function() {
 
     const idleDurationSecs = 300;    // X number of seconds
@@ -163,10 +121,14 @@ function resumePipeline(pauseId, taskName){
 
 })();
 
-
+function updateTimeZone(){
+	
+	timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+	document.getElementById("report_download").setAttribute("href","/"+ appName +"/report?timezone="+timezone);
+}
 function updateTasks(){
 {
-   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+   updateTimeZone()
    $.ajax({
 
      type: "GET",

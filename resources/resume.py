@@ -15,21 +15,22 @@ Created on 13-May-2022
 ***** You don't have any permission to modify any code in this framework without having prior approval from the author. *****
 
 '''
-from . import Resource, get_db_obj, Error, close_db_connection, TableName, TrackerColumns, ExecutionStatus, ResponseStatus, TIMESTAMP_FORMAT, validate_fields
-from manager.jenkins_manager import JenkinsManager
 from config import JENKINS
 from factory.sqllite_dict_factory import dict_factory
+from manager.jenkins_manager import JenkinsManager
+from flask import current_app as app
+from . import Resource, get_db_obj, Error, close_db_connection, TableName, TrackerColumns, ExecutionStatus, ResponseStatus, TIMESTAMP_FORMAT, validate_fields
 
 class ResumeResource(Resource):
-    
+    """    Resource to resume the pipeline based on the secret code provided by the user on the dashboard page.
+    """
     required_fields = [ "resumeCode", "taskName" ]
     
-    def __init__(self, app):
-        self.app = app
-        
     def __get_resume_code__(self, app_name, task_name): 
+        """    Returns the resume code from the database based on the input received.
+        """
         try:
-            sql_db_utils = get_db_obj(self.app)
+            sql_db_utils = get_db_obj(app)
             sql_db_utils.conn.row_factory = dict_factory
             sql = '''
             SELECT {secret} FROM {trackers_table} WHERE {name} = ? AND {task} = ? AND {status} = "{execution_status}"
@@ -43,21 +44,22 @@ class ResumeResource(Resource):
                 )
             sql_db_utils.execute_statement(sql, record=(app_name,task_name))
             app_details =  sql_db_utils.get_cursor().fetchone()
-            if app_details:
-                return app_details[TrackerColumns.RESUME_CODE], None
-            else:
-                return None, None
+            if app_details: return app_details[TrackerColumns.RESUME_CODE], None
+            else: return None, None
         except Error as e:
+            app.logger.critical(e,exc_info=True)
             return None, e
         finally:
             close_db_connection(sql_db_utils)
         
         
     def __update_paused_status__(self, app_name, task_name):
+        """    Updates the paused task status in the database upon the secret code verification.
+        """
         try:
             from datetime import datetime
             timestamp = datetime.utcnow().strftime(TIMESTAMP_FORMAT)
-            sql_db_utils = get_db_obj(self.app)
+            sql_db_utils = get_db_obj(app)
             sql ='''UPDATE {table_name}
                     SET {status} = "{}",
                         {timestamp} = "{}",
@@ -80,13 +82,14 @@ class ResumeResource(Resource):
                     )
             sql_db_utils.execute_script(sql)
         except Error as e:
+            app.logger.critical(e,exc_info=True)
             return e
         finally:
             close_db_connection(sql_db_utils)
         
     def __get_job_path__(self, app_name, task_name):
         try:
-            sql_db_utils = get_db_obj(self.app)
+            sql_db_utils = get_db_obj(app)
             sql_db_utils.conn.row_factory = dict_factory
             sql = '''
             SELECT {path} FROM {table_name} WHERE {app_name} = ? AND {task_name} = ? AND {execution_status} = "{paused}"
@@ -100,52 +103,44 @@ class ResumeResource(Resource):
                 )
             sql_db_utils.execute_statement(sql, record=(app_name,task_name))
             app_details =  sql_db_utils.get_cursor().fetchone()
-            if app_details:
-                return app_details[TrackerColumns.JENKINS_JOB_NAME], None
-            else:
-                return None, None
+            if app_details: return app_details[TrackerColumns.JENKINS_JOB_NAME], None
+            else: return None, None
         except Error as e:
-            print(e)
+            app.logger.critical(e,exc_info=True)
             return None, e
         finally:
             close_db_connection(sql_db_utils)
             
     def post(self,app_name):
-        from flask import request
-        request_json = request.get_json()
-        if request_json == None:
-            return {"status" : ResponseStatus.FAILURE, "message" : "Unable to read the details from payload. Please make sure it is in JSON format"}, 400
-        validation = validate_fields(ResumeResource.required_fields, request_json)
-        if validation: return {"status" : ResponseStatus.FAILURE, "message" : validation}, 400
-        resume_code = request_json["resumeCode"]
-        task_name = request_json["taskName"]
-        db_resume_code, err = self.__get_resume_code__(app_name,task_name)
-        if err:
-            return  {"status": ResponseStatus.ERROR, "message": "Unable to retrieve the resume code for the verification. Please contact administrator."}, 500
-        if db_resume_code:
-            if db_resume_code == resume_code:
-                job_path, err = self.__get_job_path__(app_name, task_name)
-                if err:
-                    return {"status": ResponseStatus.ERROR, "message": "Unable to retrieve the master job path. Please contact administrator."}, 500
-                if job_path == None:
-                    return  {"status": ResponseStatus.FAILURE, "message": "Unable to find the master Jenkins job path."}, 400
-                jenkins_manager_obj = JenkinsManager(JENKINS["SERVER_URL"], JENKINS["USERNAME"], JENKINS["TOKEN"])
-                queue_id, exception = jenkins_manager_obj.build_job(job_path)
-                if exception == None:
-                    if jenkins_manager_obj.verify_build_in_queue(queue_id):
-                        err = self.__update_paused_status__(app_name, task_name)
-                        if err:
-                            return  {"status": ResponseStatus.ERROR, "message": "Unable to update the pause status after verification. Please contact administrator."}, 500
-                        return {"status": ResponseStatus.SUCCESS, "message": "Execution has been resumed."}, 200
-                    else:
-                        return {"status": ResponseStatus.FAILURE,"message":"Executed job is not added in queue."}, 404
-                else:
-                    return {"status": ResponseStatus.FAILURE,"message":"Exception occurred. Reason: {0}".format(str(exception))}, 400
-            else:
-                return {"status": ResponseStatus.FAILURE,"message":"Provided code does not match with the actual code."}, 400
-        else:
-            return {"status": ResponseStatus.FAILURE,"message":"Either task has been resumed or name of the task/application is/are incorrect."}, 400
-        
-        
+        try:
+            from flask import request
+            request_json = request.get_json()
+            if request_json == None: return {"status" : ResponseStatus.FAILURE, "message" : "Unable to read the details from payload. Please make sure it is in JSON format"}, 400
+            validation = validate_fields(ResumeResource.required_fields, request_json)
+            if validation: return {"status" : ResponseStatus.FAILURE, "message" : validation}, 400
+            resume_code = request_json["resumeCode"]
+            task_name = request_json["taskName"]
+            db_resume_code, err = self.__get_resume_code__(app_name,task_name)
+            if err: return  {"status": ResponseStatus.ERROR, "message": "Unable to retrieve the resume code for the verification. Please contact administrator."}, 500
+            if db_resume_code:
+                if db_resume_code == resume_code:
+                    job_path, err = self.__get_job_path__(app_name, task_name)
+                    if err: return {"status": ResponseStatus.ERROR, "message": "Unable to retrieve the master job path. Please contact administrator."}, 500
+                    if job_path == None: return  {"status": ResponseStatus.FAILURE, "message": "Unable to find the master Jenkins job path."}, 400
+                    jenkins_manager_obj = JenkinsManager(JENKINS["SERVER_URL"], JENKINS["USERNAME"], JENKINS["TOKEN"])
+                    queue_id, exception = jenkins_manager_obj.build_job(job_path)
+                    if exception == None:
+                        if jenkins_manager_obj.verify_build_in_queue(queue_id):
+                            err = self.__update_paused_status__(app_name, task_name)
+                            if err: return  {"status": ResponseStatus.ERROR, "message": "Unable to update the pause status after verification. Please contact administrator."}, 500
+                            return {"status": ResponseStatus.SUCCESS, "message": "Execution has been resumed."}, 200
+                        else: return {"status": ResponseStatus.FAILURE,"message":"Executed job is not added in queue."}, 404
+                    else: return {"status": ResponseStatus.FAILURE,"message":"Exception occurred. Reason: {0}".format(str(exception))}, 400
+                else: return {"status": ResponseStatus.FAILURE,"message":"Provided code does not match with the actual code."}, 400
+            else: return {"status": ResponseStatus.FAILURE,"message":"Either task has been resumed or name of the task/application is/are incorrect."}, 400
+        except Exception as e:
+            app.logger.critical(e,exc_info=True)
+            return {"status": ResponseStatus.FAILURE,"message":"Some error occurred while resuming the pipeline. Please contact administrator."}, 400
+            
         
     

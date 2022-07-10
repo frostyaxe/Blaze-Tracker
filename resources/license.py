@@ -20,10 +20,7 @@ from . import ResourceTemplatesName
 from . import get_license
 
 class License(Resource):
-    
-    def __init__(self,app):
-        self.app = app
-    
+    """ Flask resource to handle license details page
+    """
     def get(self):
-        
         return make_response(render_template(ResourceTemplatesName.LICENSE_PAGE, license=get_license().replace("<", "&lt;").replace(">", "&gt;")))

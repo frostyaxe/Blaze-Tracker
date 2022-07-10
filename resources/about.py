@@ -15,13 +15,14 @@ Created on 09-Apr-2022
 
 '''
 from . import Resource
-from . import make_response, render_template
 from . import ResourceTemplatesName
+from . import make_response, render_template
+from flask import request,current_app as app
+
 
 class About(Resource):
     
-    def __init__(self,app):
-        self.app = app
     
     def get(self):
+        app.logger.critical("---------------------------- Starting Application ----------------------------",extra={"ip_addr":request.remote_addr})
         return make_response(render_template(ResourceTemplatesName.ABOUT_PAGE))

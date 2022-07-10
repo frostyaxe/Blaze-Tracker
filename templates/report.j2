@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+		 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+		 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/ >
+		 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+		<script>
+		  $(function(){
+		     $('#work').on('activate.bs.scrollspy')
+		  });
+		</script>
+		<style>
+		  body
+		  {
+		    position: relative;
+		  }
+		</style>
+		
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	    <script type="text/javascript">
+	      google.charts.load("current", {packages:["corechart"]});
+	      google.charts.setOnLoadCallback(drawChart);
+	      function drawChart() {
+	        var execution_data = google.visualization.arrayToDataTable([
+				{% for key, value in execution_time_data.items() %}
+					{% if value is string %}
+						['{{ key }}', '{{ value }}'],
+					{% else %}
+						['{{ key }}', { v:{{ value['v'] }},f:"{{ value['f'] }}" }],
+					{% endif %}
+				{% endfor %}
+	        ]);
+	
+	        var execution_options = {
+	        title: "Execution Time",
+  is3D: true,
+  slices: {  
+  0: {color: '#74B74E'},
+  1: {color: '#E3242B'},
+	2: {offset: 0.2},
+	3: {offset: 0.3}
+  }
+	        };
+	        
+	        
+	        var tasks_data = google.visualization.arrayToDataTable([
+				{% for key, value in tasks_data.items() %}
+					{% if value is string %}
+						['{{ key }}', '{{ value }}'],
+					{% else %}
+						['{{ key }}', {{ value }}],
+					{% endif %}
+				{% endfor %}
+	        ]);
+	        
+	        var count_options = {
+	        title: "Tasks",
+	         pieHole: 0.5,
+	         slices:{
+	           0: {color: '#74B74E'},
+  				1: {color: '#E3242B'},
+	         }
+	        };
+	
+	        var execution_time_chart = new google.visualization.PieChart(document.getElementById('execution_time_chart'));
+	        execution_time_chart.draw(execution_data, execution_options);
+	        var task_count_chart = new google.visualization.PieChart(document.getElementById('task_count_chart'));
+	        task_count_chart.draw(tasks_data, count_options);
+	      }
+	    </script>
+	</head>
+	<body>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-light ">
+		  <div class="container-fluid">
+		    <a class="navbar-brand" href="#">Blaze | Report</a>
+		    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+		      <span class="navbar-toggler-icon"></span>
+		    </button>
+		    <ul class="navbar-nav ml-auto">
+		    	 <li class="nav-item">
+		    	 	 <span class="navbar-text" >
+		       		 {{app_name}}
+		     		 </span>
+		     	</li>
+		    </ul>
+		  </div>
+		</nav>
+		{% if info_msg %}
+		<div class="alert alert-info" role="alert">{{ info_msg }}</div>
+		{%endif%}
+		<div class="border p-5 mb-5">
+        <!-- Copy this code to have a working example -->
+        <!--Section: Design Block-->
+        <section>
+         <div class="alert alert-secondary"><h2>Overall Status<br></h2></div>
+          <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <p class="text-uppercase small mb-2">
+                    <strong>Total Tasks</strong>
+                  </p>
+                  <h5 class="mb-0 ">
+                 	 <strong>{{total_tasks}}</strong>
+                  </h5>
+
+                  <hr>
+
+                  <p class="text-uppercase text-muted small mb-2">
+                    Total Execution Time
+                  </p>
+                  <h5 class="text-muted mb-0">{{total_all_execution_time}}</h5>
+                </div>
+              </div>
+              <!-- Card -->
+            </div>
+ 		<div class="col-lg-3 col-md-6 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <p class="text-uppercase small mb-2">
+                    <strong>Total Successful Tasks</strong>
+                  </p>
+                  <h5 class="text-success mb-0">
+                    <strong>{{total_success_tasks}}</strong>
+                  </h5>
+
+                  <hr>
+
+                  <p class="text-uppercase text-muted small mb-2">
+                    Execution Time
+                  </p>
+                  <h5 class="text-muted mb-0">{{total_success_execution_time}}</h5>
+                </div>
+              </div>
+              <!-- Card -->
+            </div>
+             <div class="col-lg-3 col-md-6 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <p class="text-uppercase small mb-2">
+                    <strong>Total Failed Tasks</strong>
+                  </p>
+                  <h5 class="mb-0 text-danger">
+                    <strong>{{total_failed_tasks}}</strong>
+                  </h5>
+
+                  <hr>
+
+                  <p class="text-uppercase text-muted small mb-2">
+                    Execution Time
+                  </p>
+                  <h5 class="text-muted mb-0">{{total_failure_execution_time}}</h5>
+                </div>
+              </div>
+              <!-- Card -->
+            </div>
+            
+             <div class="col-lg-3 col-md-6 mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <p class="text-uppercase small mb-2">
+                    <strong>Total Pauses</strong>
+                  </p>
+                  <h5 class="mb-0 text-secondary">
+                    <strong>{{total_pause_tasks}}</strong>
+                  </h5>
+
+                  <hr>
+
+                  <p class="text-uppercase text-muted small mb-2">
+                    Pause Time
+                  </p>
+                  <h5 class="text-muted mb-0">{{total_pause_execution_time}}</h5>
+                </div>
+              </div>
+              <!-- Card -->
+            </div>
+        </section>
+        
+      </div>
+<div class="container justify-content-center">
+  <div class="row py-3">
+     <div class="col-md-6">
+		
+		<div id="execution_time_chart" style="width: 600px; height: 500px;"></div>
+	</div>
+	 <div class="col-md-6">
+		
+		<div id="task_count_chart" style="width: 600px; height: 500px;"></div>
+	</div>
+</div>
+</div>
+<div class="container mb-5">
+  <div class="alert alert-secondary"><h2 class="py-3" text-center>Tasks Details</h2></div>
+  <div class="row py-3">
+    <div class="col-md-4">
+        <div id="lex" class="list-group sticky-top">
+        {% for task_data in task_details %}
+          {% if task_data['STATUS'] == "SUCCESS" or task_data['STATUS'] == "RESUMED"  %}
+          <a class="list-group-item list-group-item-action" href="#section{{loop.index}}"><i class="fa fa-check text-success" style="font-size:18px"></i><span class="ms-1"></span>{{ task_data["TASK_NAME"] }}</a>
+          {% elif task_data['STATUS'] == "FAILURE" %}
+          <a class="list-group-item list-group-item-action" href="#section{{loop.index}}"><i class="fa fa-close text-danger" style="font-size:21px"></i><span class="ms-1"></span>{{ task_data["TASK_NAME"] }}</a>
+          {% elif task_data['STATUS'] == "RUNNING" %}
+          <a class="list-group-item list-group-item-action" href="#section{{loop.index}}"><i class="fa fa-circle-o-notch text-info" style="font-size:18px"></i><span class="ms-1"></span>{{ task_data["TASK_NAME"] }}</a>
+          {% elif task_data['STATUS'] == "PAUSED" %}
+          <a class="list-group-item list-group-item-action" href="#section{{loop.index}}"><i class="fa fa-pause-circle-o text-secondary" style="font-size:18px"></i><span class="ms-1"></span>{{ task_data["TASK_NAME"] }}</a>
+          {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="scrollspy-example" data-bs-spy="scroll" data-bs-target="#lex" id="work" data-offset="20" style="height: 180px; overflow: auto;">
+          
+          {% for task_data in task_details %}
+          <h4 id="section{{loop.index}}">{{ task_data["TASK_NAME"] }}</h4>
+          <table class="table table-hover mt-4 mb-5">
+			  <thead>
+			    <tr>
+			      <th scope="col">Version</th>
+			      <th scope="col">Timestamp</th>
+			      <th scope="col">Elapsed Time</th>
+			      <th scope="col">Status</th>
+			      <th scope="col">Build Log</th>
+			    </tr>
+			  </thead>
+			  <tbody>
+			    <tr>
+			      <td>{{ task_data["JOB_ID"] }}</td>
+			      <td>{{ task_data["TIMESTAMP"] }}</td>
+			      <td>{{ task_data["TIME_DIFF"] }}</td>
+			      {% if task_data['STATUS'] == "SUCCESS" %}
+			      <td><span class="badge bg-success rounded-pill">Success</span></td>
+			      {% elif task_data['STATUS'] == "FAILURE" %}
+			      <td><span class="badge bg-danger rounded-pill">Failure</span></td>
+			      {% elif task_data['STATUS'] == "RUNNING" %}
+			      <td><span class="badge bg-info rounded-pill">Running</span></td>
+			      {% elif task_data['STATUS'] == "RESUMED" %}
+			      <td><span class="badge bg-success rounded-pill">Resumed</span></td>
+			      {% elif task_data['STATUS'] == "PAUSED" %}
+			      <td><span class="badge bg-secondary rounded-pill">Paused</span></td>
+			      {% endif %}
+			      {% if task_data['STATUS'] == "PAUSED" or task_data['STATUS'] == "RESUMED" %}
+			      <td><a href="#" class="btn btn-outline-dark" role="button" ><i class="fa fa-link"></i></a></td>
+			      {% else %}
+			      <td><a href="{{task_data['JOB_URL'] }}" class="btn btn-outline-dark" role="button" target="_blank" ><i class="fa fa-link"></i></a></td>
+			      {% endif %}
+			    </tr>
+			  </tbody>
+			</table>
+		{%endfor%}
+        </div>
+    </div>
+  </div>
+	</body>
+</html>

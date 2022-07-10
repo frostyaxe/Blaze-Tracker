@@ -6,7 +6,6 @@
 {% block external_css %}
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/dashboard.css') }}" />
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/sidebar.css') }}" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/ >
 	<style>
 	.mermaid {width:120% !important}
 	div.scroll {
@@ -27,7 +26,11 @@ li.legends:before {
 {% endblock %}
 
 {% block external_js %}
-
+	<script>
+		$(document).ready(function(){
+		$("#page-content").css("margin-left", "13%");
+		});
+	</script>
 {% endblock %}
 
 {% block content %}
@@ -42,8 +45,8 @@ li.legends:before {
 
       <div class="list-group list-group-flush mx-3 mt-2">
      
-		<a class="btn btn-outline-dark mt-5" href="/{{ app_name }}/view/dashboard">
-        	<span>View Dashboard</span>
+		<a class="btn btn-outline-dark mt-5 text-start" href="/{{ app_name }}/view/dashboard">
+        	<span><i class="fa-solid fa-chalkboard-user"></i> View Dashboard</span>
         </a>
       </div>
    
@@ -63,7 +66,7 @@ li.legends:before {
 {% with messages = get_flashed_messages() %}
    {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning mt-3" role="alert">
 		  <pre>{{ message }}</pre>
 		</div>
         {% endfor %}
@@ -131,7 +134,7 @@ flowchart LR
 	</ul>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.1/mermaid.min.js" integrity="sha512-7AtDHIWTEL1Km2V9clac6gs1x3F67rS6HGZMBYaUogsohvODnWrq5GkW9WRh1XjTMs4Um9hjGUNSjI+3XluoZQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{{ url_for('static',filename='js/mermaid.min.js') }}" ></script>
 	<script>mermaid.initialize({startOnLoad:true,flowchart:{
             useMaxWidth:false,
             htmlLabels:true,

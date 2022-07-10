@@ -15,13 +15,14 @@ Created on 03-May-2022
 
 '''
 
-from . import wraps
-from . import session
-from . import encode
-from . import decode
-from . import redirect
 from . import BlazeUrls
-    
+from . import decode
+from . import encode
+from . import redirect
+from . import session
+from . import wraps
+
+
 def auth_required(func):
     @wraps(func)
     def wrapper(obj,*args, **kwargs):

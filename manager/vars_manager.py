@@ -74,6 +74,7 @@ class BlazeUrls:
     GET_PAUSE_BUILD_QUEUE_STATUS = "/queuePaused"
     MANAGE_BUILD_QUEUE = "/admin/manageBuildQueue/<int:code>"
     DISPLAY_BUILD_QUEUE = "/admin/manageBuildQueue"
+    REPORT = "/<app_name>/report"
     
     
     
@@ -152,3 +153,8 @@ class NotificationColumns:
     MESSAGE = "MESSAGE"
     IS_DISPLAYED = "IS_DISPLAYED"
     
+    
+class BuildQueueColumns:
+    
+    IS_QUEUE_PAUSED="IS_QUEUE_PAUSED"
+    ID="ID"
