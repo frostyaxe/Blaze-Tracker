@@ -5,12 +5,19 @@
 
 
 {% block external_js %}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ url_for('static',filename='js/build_queue.js') }}"></script>
+	<script>
+		$(document).ready(function(){
+		$("#page-content").css("margin-left", "13%");
+		});
+	</script>
 {% endblock %}
 
 {% block page %}
-	
+	{% if err_msg %}
+		<div class="alert alert-danger mb-5" role="alert">{{err_msg}}</div>
+	{% endif %}
 	<div class="toast fade align-items-center text-white border-0" style="position: absolute; top: 3.8rem; right: 01.5rem; z-index: 1111;" role="toast" data-bs-autohide="true"  id="toastMessage">
 	  <div class="d-flex">
 	    <div class="toast-body" id="toastBody" >
@@ -20,6 +27,9 @@
 	  </div>
 	</div> 	
 	<div class="form-container">
+		
+		<h5 class="lead mb-5">Current Status: <button class="lead btn btn-info text-white" id="status">{{status}}</button></h5>
+		
 		<button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#resumeQueue">
 			Resume Build Queue
 		</button>
@@ -39,7 +49,7 @@
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-		        <button type="button" class="btn btn-primary">Resume</button>
+		        <button type="button" id="resumeQueueBtn" class="btn btn-primary">Resume</button>
 		      </div>
 		    </div>
 		  </div>
@@ -56,7 +66,7 @@
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-		        <button type="button" class="btn btn-primary">Pause</button>
+		        <button type="button" id="pauseQueueBtn" class="btn btn-primary">Pause</button>
 		      </div>
 		    </div>
 		  </div>

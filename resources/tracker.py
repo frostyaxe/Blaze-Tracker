@@ -15,30 +15,31 @@ Created on 13-May-2022
 ***** You don't have any permission to modify any code in this framework without having prior approval from the author. *****
 '''
 
-from . import Resource, get_db_obj, TableName, RemoveTrackerColumns, Error, close_db_connection, ResponseStatus, ApplicationTableColumns
 from manager.vars_manager import TrackerColumns
+from flask import current_app as app
+from . import Resource, get_db_obj, TableName, RemoveTrackerColumns, Error, close_db_connection, ResponseStatus, ApplicationTableColumns
 
 class TrackerRemove(Resource):
-    
-    def __init__(self, app):
-        self.app = app
-    
+    """    Resource to handle the removal of tracker based on the requirement.
+    """
     def __get_tracker_code__(self, appName):
         try:
-            sql_db_utils = get_db_obj(self.app)
+            sql_db_utils = get_db_obj(app)
             sql = '''
             SELECT {secret} FROM {table_name} WHERE {app_name} = ?
             '''.format(secret=RemoveTrackerColumns.SECRET_CODE,table_name=TableName.REMOVE_TRACKER,app_name=RemoveTrackerColumns.APP_NAME)
             record=sql_db_utils.execute_statement(sql,record=(appName,)).fetchone()
             return record, None
         except Error as e:
+            app.logger.critical(e,exc_info=True)
             return None, e
-        finally:
-            close_db_connection(sql_db_utils)
+        finally: close_db_connection(sql_db_utils)
                 
     def __delete_tracker_details__(self, app_name):
+        """    Removes the details from the tracker in the database for the given application
+        """
         try:
-            sql_db_utils = get_db_obj(self.app)
+            sql_db_utils = get_db_obj(app)
             sql ='''DELETE FROM {table_name}
                     WHERE EXISTS (SELECT *
                           FROM {table_name}
@@ -46,65 +47,65 @@ class TrackerRemove(Resource):
                 )'''.format(app_name,app_name,table_name=TableName.TRACKERS,app_name=TrackerColumns.APP_NAME)
             sql_db_utils.execute_script(sql)
         except Error as e:
+            app.logger.critical(e,exc_info=True)
             return e
-        finally:
-            close_db_connection(sql_db_utils)
+        finally: close_db_connection(sql_db_utils)
      
     def __delete_remove_tracker_code__(self, app_name):
+        """  Removes the record from remove_tracker table in the database
+        """
         try:
-            sql_db_utils = get_db_obj(self.app)
+            sql_db_utils = get_db_obj(app)
             sql ='''DELETE FROM {table_name}
                     WHERE EXISTS (SELECT *
                           FROM {table_name}
                           WHERE {app_name} = "{}" )  AND ({app_name} = "{}"
                 )'''.format(app_name,app_name, table_name=TableName.REMOVE_TRACKER, app_name=RemoveTrackerColumns.APP_NAME)
-            
             sql_db_utils.execute_script(sql)
         except Error as e:
+            app.logger.critical(e,exc_info=True)
             return e
-        finally:
-            close_db_connection(sql_db_utils)
+        finally: close_db_connection(sql_db_utils)
                 
     def delete(self, app_name, code):
-        record, err = self.__get_tracker_code__(app_name)
-        if err: return {"status": ResponseStatus.ERROR, "message": "Unable to get the remove tracker code. Please contact administrator!"}, 500
-        actual_code = None
-        if record: 
-            actual_code = record[0]
-            if actual_code == code:
-                err = self.__delete_tracker_details__(app_name)
-                if err: return {"status": ResponseStatus.ERROR, "message": "Unable to delete the tracker details. Please contact administrator!"}, 500 
-                err = self.__delete_remove_tracker_code__(app_name)
-                if err: return {"status": ResponseStatus.ERROR, "message": "Unable to delete the remove tracker code. Please contact administrator!"}, 500 
-                return {"status": ResponseStatus.SUCCESS, "message": "Removed the tracker details successfully!"}, 200
-            else:
-                return {"status": ResponseStatus.FAILURE, "message": "Provided code does not match with the actual code!"}, 400
-        else:
-            return {"status": ResponseStatus.FAILURE, "message": "Please generate the remove tracker code first!"}, 403
-            
-        
+        """    Delete endpoint to remove the tracker based on the user's request
+        """
+        try:
+            record, err = self.__get_tracker_code__(app_name)
+            if err:  raise Exception(err)
+            actual_code = None
+            if record: 
+                actual_code = record[0]
+                if actual_code == code:
+                    err = self.__delete_tracker_details__(app_name)
+                    if err: raise Exception(err)
+                    err = self.__delete_remove_tracker_code__(app_name)
+                    if err: raise Exception(err)
+                    return {"status": ResponseStatus.SUCCESS, "message": "Removed the tracker details successfully!"}, 200
+                else: return {"status": ResponseStatus.FAILURE, "message": "Provided code does not match with the actual code!"}, 400
+            else: return {"status": ResponseStatus.FAILURE, "message": "Please generate the remove tracker code first!"}, 403
+        except Exception as e:
+            app.logger.critical(e,exc_info=True)   
+            return {"status": ResponseStatus.ERROR, "message": "Unable to delete the remove tracker code. Please contact administrator!"}, 500 
 
 class RemoveCode(Resource):
-    
-    def __init__(self, app):
-        self.app = app
         
     def __get_recipients_ids__(self, app_name):
         try:
-            sql_db_utils = get_db_obj(self.app)
+            sql_db_utils = get_db_obj(app)
             sql = '''
             SELECT {email} FROM {table_name} WHERE {app_name} = ? 
             '''.format(email=ApplicationTableColumns.EMAIL_IDS, table_name=TableName.APP, app_name=ApplicationTableColumns.NAME)
             record=sql_db_utils.execute_statement(sql,record=(app_name,)).fetchone()
             return record, None
         except Error as e:
+            app.logger.critical(e,exc_info=True)   
             return None, e
-        finally:
-            close_db_connection(sql_db_utils)
+        finally: close_db_connection(sql_db_utils)
         
     def get(self, app_name):
         try:
-            sql_db_utils = get_db_obj(self.app)
+            sql_db_utils = get_db_obj(app)
             sql = '''INSERT OR REPLACE INTO {table_name}({app_name},{secret})
                   VALUES(?,?)'''.format(table_name=TableName.REMOVE_TRACKER,app_name=RemoveTrackerColumns.APP_NAME,secret=RemoveTrackerColumns.SECRET_CODE)
             from support.secret_code_generator import get_code
@@ -112,21 +113,22 @@ class RemoveCode(Resource):
             recipients, err = self.__get_recipients_ids__(app_name)
             if err: return {"status": ResponseStatus.ERROR, "message":"Unable to retrieve the recipients email ID. Please contact administrator."}, 500
             sql_db_utils.execute_statement(sql, record=(app_name, code ))
-        except Error:
-            return {"status": ResponseStatus.ERROR, "message":"Unable to add remove tracker code. Please contact administrator."}, 500
+        except Exception as e:
+            app.logger.critical(e,exc_info=True) 
+            return {"status": ResponseStatus.ERROR, "message":"Unable to add \"remove tracker\" code. Please contact administrator."}, 500
         finally:
             close_db_connection(sql_db_utils)
-
-        from manager.notification_manager import SendEmailNotification
-        email_notifier = SendEmailNotification()
-        email_notifier.subject = "[ {0} ] Remove Tracker Request (Blaze)".format(app_name)
-        email_notifier.template_name = "remove_tracker.j2"
-        if len(recipients) > 0:
-            email_notifier.receiver = recipients[0].split(",") + email_notifier.receiver
-        else:
-            return {"status": ResponseStatus.ERROR, "message": "Unable to find recipients. Please contact administrator."}, 500
-        from flask import request
-        email_notifier.vars = {"remove_tracker_code": code, "tracker_url":request.root_url,"app_name":app_name }
-        email_notifier.send_email()  
-        return {"status": ResponseStatus.SUCCESS, "message": "Code has been sent  to the following recipients -> \n{0}!".format('\n'.join([ email  for emails in email_notifier.receiver for email in emails.split(",")  ]))}
-        
+        try:
+            from manager.notification_manager import SendEmailNotification
+            email_notifier = SendEmailNotification()
+            email_notifier.subject = "[ {0} ] Remove Tracker Request (Blaze)".format(app_name)
+            email_notifier.template_name = "remove_tracker.j2"
+            if len(recipients) > 0:  email_notifier.receiver = recipients[0].split(",") + email_notifier.receiver
+            else: return {"status": ResponseStatus.ERROR, "message": "Unable to find recipients. Please contact administrator."}, 500
+            from flask import request
+            email_notifier.vars = {"remove_tracker_code": code, "tracker_url":request.root_url,"app_name":app_name }
+            email_notifier.send_email()  
+            return {"status": ResponseStatus.SUCCESS, "message": "Code has been sent  to the following recipients -> \n{0}!".format('\n'.join([ email  for emails in email_notifier.receiver for email in emails.split(",")  ]))}
+        except Exception as e:
+            app.logger.critical(e,exc_info=True)   
+            return {"status": ResponseStatus.ERROR, "message": "Unable to send 'remove tracker code' over the email notification. Please contact administrator."}, 500

@@ -40,75 +40,79 @@ from resources.unregistration import Unregistration
 from resources.update_application import UpdateApplication,GetAppDetails
 from resources.license import License
 from resources.about import About
+from resources.report import Report
 from resources.current_running_tasks import CurrentRunningTasks, FetchRunningTasks
 from secrets import token_hex
 from datetime import timedelta
 from manager.vars_manager import BlazeUrls, ResourceTemplatesName, NotificationColumns
-
+from logging.config import dictConfig
+from config import logger_dict_config
 # Initialization of the variables
 app = Flask(__name__)
 app.config['SECRET_KEY'] = token_hex(16)
 app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=5)
 api = Api(app)
+dictConfig(logger_dict_config)
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Adding index resource
-api.add_resource(Index, BlazeUrls.INDEX, resource_class_kwargs={'app': app})
+api.add_resource(Index, BlazeUrls.INDEX)
 
 # Adding registration and unregistration resources
-api.add_resource(Registration, BlazeUrls.REGISTRATION, resource_class_kwargs={'app': app})
-api.add_resource(Unregistration, BlazeUrls.UNREGISTRATION, resource_class_kwargs={'app': app})
+api.add_resource(Registration, BlazeUrls.REGISTRATION)
+api.add_resource(Unregistration, BlazeUrls.UNREGISTRATION)
 
 # Adding resources related to the dashboard view
-api.add_resource(Dashboard, BlazeUrls.DASHBOARD_PAGE,resource_class_kwargs={'app': app})
-api.add_resource(DashboardTasks, BlazeUrls.DASHBOARD_GET_TASKS,resource_class_kwargs={'app': app})
-api.add_resource(ResumeResource, BlazeUrls.DASHBOARD_RESUME_PIPELINE,resource_class_kwargs={'app': app})
+api.add_resource(Dashboard, BlazeUrls.DASHBOARD_PAGE)
+api.add_resource(DashboardTasks, BlazeUrls.DASHBOARD_GET_TASKS)
+api.add_resource(ResumeResource, BlazeUrls.DASHBOARD_RESUME_PIPELINE)
 
 # Adding resources related to the task details retrieve and manipulation
-api.add_resource(AddTask, BlazeUrls.ADD_TASK,resource_class_kwargs={'app': app})
-api.add_resource(UpdateTaskStatus, BlazeUrls.UPDATE_TASK_STATUS,resource_class_kwargs={'app': app})
-api.add_resource(GetTaskStatus, BlazeUrls.GET_TASK_STATUS,resource_class_kwargs={'app': app})
-api.add_resource(DeleteTask, BlazeUrls.DELETE_TASK,resource_class_kwargs={'app': app})
+api.add_resource(AddTask, BlazeUrls.ADD_TASK)
+api.add_resource(UpdateTaskStatus, BlazeUrls.UPDATE_TASK_STATUS)
+api.add_resource(GetTaskStatus, BlazeUrls.GET_TASK_STATUS)
+api.add_resource(DeleteTask, BlazeUrls.DELETE_TASK)
 api.add_resource(VerifyTaskAuth, BlazeUrls.VERIFY_TASK_AUTH)
 
 # Adding resource to deal with job id
-api.add_resource(GetTaskJobId,BlazeUrls.GET_TASK_JOB_ID,resource_class_kwargs={'app': app})
-api.add_resource(UpdateJobId, BlazeUrls.UPDATE_TASK_JOB_ID,resource_class_kwargs={'app': app})
+api.add_resource(GetTaskJobId,BlazeUrls.GET_TASK_JOB_ID)
+api.add_resource(UpdateJobId, BlazeUrls.UPDATE_TASK_JOB_ID)
 
 # Adding resources related to Admin details
-api.add_resource(AdminLogin, BlazeUrls.ADMIN_LOGIN, resource_class_kwargs={'app': app})
-api.add_resource(AdminHome, BlazeUrls.ADMIN_HOME, resource_class_kwargs={'app': app})
-api.add_resource(AdminPasswordChange, BlazeUrls.ADMIN_PASSWORD_CHANGE, resource_class_kwargs={'app': app})
-api.add_resource(AdminLogout, BlazeUrls.ADMIN_LOGOUT, resource_class_kwargs={'app': app})
-api.add_resource(UpdateApplication, BlazeUrls.UPDATE_APPLICATION_DETAILS, resource_class_kwargs={'app': app})
-api.add_resource(UpdateRegistrationDetails, BlazeUrls.UPDATE_REGISTRATION_DETAILS, resource_class_kwargs={'app': app})
-api.add_resource(GetAppDetails, BlazeUrls.GET_APPLICATION_DETAILS,resource_class_kwargs={'app': app})
-api.add_resource(AdminNotifier, BlazeUrls.BLAZE_NOTIFIER,resource_class_kwargs={'app': app})
-api.add_resource(AdminControlNoticeDisplay, BlazeUrls.ADMIN_MANAGE_NOTICE,resource_class_kwargs={'app': app})
+api.add_resource(AdminLogin, BlazeUrls.ADMIN_LOGIN)
+api.add_resource(AdminHome, BlazeUrls.ADMIN_HOME)
+api.add_resource(AdminPasswordChange, BlazeUrls.ADMIN_PASSWORD_CHANGE)
+api.add_resource(AdminLogout, BlazeUrls.ADMIN_LOGOUT)
+api.add_resource(UpdateApplication, BlazeUrls.UPDATE_APPLICATION_DETAILS)
+api.add_resource(UpdateRegistrationDetails, BlazeUrls.UPDATE_REGISTRATION_DETAILS)
+api.add_resource(GetAppDetails, BlazeUrls.GET_APPLICATION_DETAILS)
+api.add_resource(AdminNotifier, BlazeUrls.BLAZE_NOTIFIER)
+api.add_resource(AdminControlNoticeDisplay, BlazeUrls.ADMIN_MANAGE_NOTICE)
 
 # Adding resources related to handling the tracker removal process
-api.add_resource(TrackerRemove, BlazeUrls.REMOVE_TRACKER_WITH_CODE, resource_class_kwargs={'app': app})
-api.add_resource(RemoveCode, BlazeUrls.GET_REMOVE_TRACKER_CODE, resource_class_kwargs={'app': app})
+api.add_resource(TrackerRemove, BlazeUrls.REMOVE_TRACKER_WITH_CODE)
+api.add_resource(RemoveCode, BlazeUrls.GET_REMOVE_TRACKER_CODE)
 
 # Adding resources to display license to the user.
-api.add_resource(License, BlazeUrls.LICENSE_PAGE, resource_class_kwargs={'app': app})
+api.add_resource(License, BlazeUrls.LICENSE_PAGE)
 
 # Adding resources to display about page
-api.add_resource(About, BlazeUrls.ABOUT, resource_class_kwargs={'app': app})
+api.add_resource(About, BlazeUrls.ABOUT)
 
 # Adding resource to display the deployment flow based on the details present in YAML taskbook.
-api.add_resource(DeploymentFlow, BlazeUrls.DEPLOYMENT_FLOW, resource_class_kwargs={'app': app})
+api.add_resource(DeploymentFlow, BlazeUrls.DEPLOYMENT_FLOW)
 
 # Adding resources to handle the current running tasks dashboard page
-api.add_resource(CurrentRunningTasks, BlazeUrls.DASHBOARD_CURRENT_TASKS, resource_class_kwargs={'app': app})
-api.add_resource(FetchRunningTasks, BlazeUrls.DASHBOARD_FETCH_RUNNING_TASKS, resource_class_kwargs={'app': app})
+api.add_resource(CurrentRunningTasks, BlazeUrls.DASHBOARD_CURRENT_TASKS)
+api.add_resource(FetchRunningTasks, BlazeUrls.DASHBOARD_FETCH_RUNNING_TASKS)
 
 # Adding resources to handle the pausing/resuming the build queue
-api.add_resource(QueuePaused, BlazeUrls.GET_PAUSE_BUILD_QUEUE_STATUS, resource_class_kwargs={'app': app})
-api.add_resource(ManageBuildQueue, BlazeUrls.MANAGE_BUILD_QUEUE, resource_class_kwargs={'app': app})
-api.add_resource(DisplayBuildQueue, BlazeUrls.DISPLAY_BUILD_QUEUE, resource_class_kwargs={'app': app})
+api.add_resource(QueuePaused, BlazeUrls.GET_PAUSE_BUILD_QUEUE_STATUS)
+api.add_resource(ManageBuildQueue, BlazeUrls.MANAGE_BUILD_QUEUE)
+api.add_resource(DisplayBuildQueue, BlazeUrls.DISPLAY_BUILD_QUEUE)
 
+api.add_resource(Report, BlazeUrls.REPORT)
 def __set_up__():
     try:
         from utilities.sqlite_db_utils import SQLLiteUtils

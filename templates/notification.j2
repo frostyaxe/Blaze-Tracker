@@ -6,6 +6,11 @@
 
 {% block external_js %}
 	<script src="{{ url_for('static',filename='js/notification.js') }}" ></script>
+		<script>
+		$(document).ready(function(){
+		$("#page-content").css("margin-left", "13%");
+		});
+	</script>
 {% endblock %}
 
 {% block page %}

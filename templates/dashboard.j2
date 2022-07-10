@@ -11,16 +11,26 @@
 {% block external_css %}
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/dashboard.css') }}" />
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/sidebar.css') }}" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/ >
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"/>
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/all.css') }}"/ >
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/regular.css') }}"/ >
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/fontawesome.css') }}"/ >
+	<link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap-icons.css') }}"/>
 	
 {% endblock %}
 
 {% block external_js %}
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
 	<script src="{{ url_for('static',filename='js/dashboard.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/all.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/solid.js') }}"></script>
+	<script src="{{ url_for('static',filename='js/fontawesome.js') }}"></script>
 	<script>
 		set_app_name("{{ app_name }}");
+	</script>
+	<script>
+		$(document).ready(function(){
+		$("#page-content").css("margin-left", "13%");
+		});
 	</script>
 {% endblock %}
 
@@ -38,16 +48,21 @@
       <div class="list-group list-group-flush mx-3 mt-2">
      
       
-        <button class="btn btn-outline-dark mt-5" data-bs-toggle="modal" data-bs-target="#removeTrackerModal">
-        	<span >Remove Tracker</span>
+        <button class="text-start btn btn-outline-dark mt-5" data-bs-toggle="modal" data-bs-target="#removeTrackerModal">
+        	<span ><i class="fa-solid fa-trash-can"></i> Remove Tracker</span>
         </button>
-		<a class="btn btn-outline-dark mt-2" href="/{{ app_name }}/view/deploymentFlow">
-        	<span>Deployment Flow</span>
+		<a class="text-start btn btn-outline-dark mt-2" href="/{{ app_name }}/view/deploymentFlow">
+        	<span><i class="fa-solid fa-diagram-next"></i> Deployment Flow</span>
         </a>
         
-        <a class="btn btn-outline-dark mt-2" href="/{{ app_name }}/view/deploymentFlow">
-        	<span>Download Report</span>
+        <a class="text-start btn btn-outline-dark mt-2" id="report_download" href="/{{ app_name }}/report">
+        	<span><i class="fa-solid fa-chart-pie"></i> Download Report</span>
         </a>
+        
+        <a class="text-start btn btn-outline-dark mt-2" href="https://github.com/frostyaxe/Blaze-Tracker/blob/master/README.md">
+        	<span><i class="fa-solid fa-file"></i> Read Documentation</span>
+        </a>
+        
       </div>
    
     </div>
@@ -85,7 +100,6 @@
 </div>
 
 
-
 	<div class="toast fade align-items-center text-white border-0" style="position: absolute; top: 3.8rem; right: 01.5rem; z-index: 1111;" role="toast" data-bs-autohide="true"  id="toastMessage">
 	  <div class="d-flex">
 	    <div class="toast-body" id="toastBody" >
@@ -101,7 +115,9 @@
 	 		 <footer class="blockquote-footer lead"><cite title="Source Title">{{ app_name }}</cite></footer>
 	  </div>
 	</blockquote>
-
+	{% if warn_msg %}
+	<div class="alert alert-warning" role="alert">{{warn_msg}}</div>
+	{% endif %}
 	<div class="container mt-5 mb-3 content-row" id="tasksContainer">
 	  {% include 'tasks.j2' %}
     </div>

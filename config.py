@@ -73,3 +73,28 @@ EMAIL = {
     "PASSWORD": getenv("EMAIL_SECRET")
         
     }
+
+logger_dict_config = {
+    'version': 1,
+    'formatters': { 
+        'standard': { 
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        }
+    },
+    'handlers': {
+        'file.handler': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'server_werkzeug.log',
+            'maxBytes': 10000000,
+            'backupCount': 5,
+            'level': 'DEBUG',
+            'formatter': 'standard'
+        },
+    },
+    'loggers': {
+        'blaze': {
+            'level': 'DEBUG',
+            'handlers': ['file.handler'],
+        },
+    },
+}

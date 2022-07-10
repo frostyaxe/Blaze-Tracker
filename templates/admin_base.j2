@@ -15,14 +15,17 @@
 
 {% block external_css %}
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/sidebar.css') }}">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	{% block external_child_css %}
 	{% endblock %}
 {% endblock %}
 
 {% block external_js %}
 	{% block external_child_js %}
-	
+	<script>
+		$(document).ready(function(){
+		$("#page-content").css("margin-left", "13%");
+		});
+	</script>
 	{% endblock %}
 {% endblock %}
 
@@ -44,15 +47,15 @@
 	    <div class="list-group list-group-flush mx-3 mt-2">
       
 	        <a href="/application/registration" class="list-group-item list-group-item-action py-2 ripple">
-	        	<span>Register Application</span>
+	        	<span><i class="fa-solid fa-layer-group"></i> Register</span>
 	        </a>
 	
 	        <a href="/application/unregistration" class="list-group-item list-group-item-action py-2 ripple">
-	        	<span>Unregister Application</span>
+	        	<span><i class="fa-solid fa-file-circle-minus"></i> Unregister</span>
 	        </a>
 	        
 	        <a href="/admin/applicationUpdate" class="list-group-item list-group-item-action py-2 ripple">
-	        	<span>Update Application</span>
+	        	<span><i class="fa-solid fa-file-pen"></i> Update</span>
 	        </a>
 
      	 </div>
@@ -62,7 +65,7 @@
       	 <div class="list-group list-group-flush mx-3 mt-2">
 
 	        <a href="/admin/passwordChange" class="list-group-item list-group-item-action py-2 ripple">
-	        	<span>Update Admin Password</span>
+	        	<span><i class="fa-solid fa-square-pen"></i> Update Password</span>
 	        </a>
 	
       </div>
@@ -72,7 +75,7 @@
       	 <div class="list-group list-group-flush mx-3 mt-2">
 	
 			<a href="/admin/notifier" class="list-group-item list-group-item-action py-2 ripple">
-	        	<span>Manage Notice</span>
+	        	<span><i class="fa-solid fa-bell"></i> Manage Notice</span>
 	        </a>
 	        
       </div>
@@ -82,7 +85,7 @@
       	 <div class="list-group list-group-flush mx-3 mt-2">
 	
 			<a href="/admin/manageBuildQueue" class="list-group-item list-group-item-action py-2 ripple">
-	        	<span>Manage Build Queue</span>
+	        	<span><i class="fa-solid fa-cubes"></i> Manage Build Queue</span>
 	        </a>
 	        
       </div>

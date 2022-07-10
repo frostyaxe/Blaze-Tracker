@@ -16,7 +16,7 @@ Created on 11-April-2022
 ***** You don't have any permission to modify any code in this framework without having prior approval from the author. *****
 
 '''
-from . import Error, connect, version
+from . import Error, connect
 
 class SQLLiteUtils(object):
     
@@ -30,7 +30,6 @@ class SQLLiteUtils(object):
        
         try:
             self.conn = connect(db_file,timeout=90)
-            self.app.logger.info("Current Version of SQL lite is {0}".format(version))
             return self.conn, None
         except Error as e:
             self.app.logger.error("Error has been detected while creating sqllite db connection. Reason: {0}".format(e))
@@ -54,8 +53,6 @@ class SQLLiteUtils(object):
         else:
             response = self.cursor.execute(sql)
             
-        self.app.logger.info("Statement execution is completed successfully........")
-
         # Commit your changes in the database
         self.conn.commit()
         
@@ -66,9 +63,6 @@ class SQLLiteUtils(object):
         
         self.cursor = self.conn.cursor()
         self.cursor.executescript(sql)
-            
-        self.app.logger.info("Statement execution is completed successfully........")
-
         # Commit your changes in the database
         self.conn.commit()
 

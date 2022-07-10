@@ -3,7 +3,6 @@ Created on 08-Jun-2022
 
 @author: Abhishek Prajapati
 '''
-from jsonschema.exceptions import ValidationError
 
 taskbook_schema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -59,6 +58,10 @@ taskbook_schema = {
                         },
                         "skip":{
                             "description": "Skips the task execution if the provided value is true",
+                            "type": "boolean"
+                        },
+                        "replay":{
+                            "description": "Re-run the task regardless of any status. Use skip flag as True else remove replay flag before resuming the pipeline or re-triggering the master job",
                             "type": "boolean"
                         },
                         "allowFailure":{

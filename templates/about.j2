@@ -1,3 +1,9 @@
+{#
+	Copyright (C) 2022 Frostyaxe. All rights reserved.
+	You don't have permission to update this file without the author's approval.
+	Author: Abhishek Prajapati (prajapatiabhishek1996@gmail.com)
+#}
+
 {% extends "base.j2" %}
 {% block title %}
 	About
@@ -5,11 +11,10 @@
 
 {% block external_css %}
 	<link rel="stylesheet" href="{{ url_for('static',filename='css/about.css') }}" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/ >
 {% endblock %}
 
 {% block external_js %}
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -24,7 +29,7 @@
 	                <div class="social">
 	                    <div class="title-wrapper">
 	                        <div class="icon-container">
-	                            <span class="social-icon"><i class="fa fa-github"></i></span>
+	                            <span class="social-icon"><i class="fa-brands fa-github"></i></span>
 	                        </div>
 	                        
 	                        <div class="info">
@@ -59,7 +64,7 @@
 	                <div class="social">
 	                    <div class="title-wrapper">
 	                        <div class="icon-container">
-	                            <span class="social-icon"><i class="fa fa-facebook"></i></span>
+	                            <span class="social-icon"><i class="fa-brands fa-facebook"></i></span>
 	                        </div>
 	                        
 	                        <div class="info">
@@ -83,7 +88,7 @@
 	                <div class="social">
 	                    <div class="title-wrapper">
 	                        <div class="icon-container">
-	                            <span class="social-icon"><i class="fa fa-google"></i></span>
+	                            <span class="social-icon"><i class="fa-brands fa-google"></i></span>
 	                        </div>
 	                        
 	                        <div class="info">
